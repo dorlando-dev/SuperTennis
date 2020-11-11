@@ -6,6 +6,7 @@ public class PlayerMover : MonoBehaviour
 {
     public int speed = 5;
     public CharacterController CharacterController;
+    public Animator Animator;
 
     private int xMovement;
     private int zMovement;
@@ -38,6 +39,9 @@ public class PlayerMover : MonoBehaviour
             zMovement = 1;
         else
             zMovement = 0;
+
+        if (Input.GetKeyDown(KeyCode.Space))
+            Animator.SetTrigger("Serve");
     }
 
     private void UpdatePosition()

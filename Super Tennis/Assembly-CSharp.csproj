@@ -56,12 +56,13 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\GameManager\GameManager.cs" />
     <Compile Include="Assets\Scripts\Game\PlayerMover.cs" />
     <Compile Include="Assets\Scripts\Game\ActionMapper.cs" />
-    <Compile Include="Assets\Scripts\GameManager\GameManager.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\Fonts\misc\readme.txt" />
+     <None Include="Assets\Tennis_Player\keyframe_information.txt" />
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2020.1.4f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>
