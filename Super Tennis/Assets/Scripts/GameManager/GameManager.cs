@@ -1,16 +1,21 @@
-﻿using System.Collections;
+﻿using FrameLord;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviorSingleton<GameManager>
 {
     [HideInInspector]
     public GameMode gameMode;
-
+    [HideInInspector]
     public GameState gameState = GameState.MainMenu;
 
     public GameObject pauseMenu;
+    public int tournamentMatches = 3;
+    public int exhibitionMatches = 1;
+    public int difficulty = 1;
+    public int gamesToWin = 2;
 
     // Start is called before the first frame update
     void Start()
@@ -90,5 +95,30 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Quit!");
         Application.Quit();
+    }
+
+    public GameMode GetGameMode()
+    {
+        return gameMode;
+    }
+
+    public int GetTournamentMatches()
+    {
+        return tournamentMatches;
+    }
+
+    public int GetExhibitionMatches()
+    {
+        return exhibitionMatches;
+    }
+
+    public int GetDifficulty()
+    {
+        return difficulty;
+    }
+
+    public int GetGamesToWin()
+    {
+        return gamesToWin;
     }
 }

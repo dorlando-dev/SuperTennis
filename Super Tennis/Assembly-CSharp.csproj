@@ -59,6 +59,7 @@
     <Compile Include="Assets\Scripts\GameManager\GameManager.cs" />
     <Compile Include="Assets\Scripts\Game\PlayerMover.cs" />
     <Compile Include="Assets\Scripts\Game\ActionMapper.cs" />
+    <Compile Include="Assets\Scripts\Game\MatchManager.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\Fonts\misc\readme.txt" />
