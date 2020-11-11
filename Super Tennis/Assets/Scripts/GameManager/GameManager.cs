@@ -1,4 +1,5 @@
 ﻿using FrameLord;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +10,7 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
     [HideInInspector]
     public GameMode gameMode;
     [HideInInspector]
-    public GameState gameState = GameState.MainMenu;
+    public GameState gameState;
 
     public GameObject pauseMenu;
     public int tournamentMatches = 3;
@@ -20,6 +21,7 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
     // Start is called before the first frame update
     void Start()
     {
+        SceneManager.LoadScene("MainMenu");
         DontDestroyOnLoad(this);
     }
 
@@ -93,7 +95,6 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
 
     public void QuitGame()
     {
-        Debug.Log("Quit!");
         Application.Quit();
     }
 

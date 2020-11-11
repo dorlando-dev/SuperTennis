@@ -16,22 +16,27 @@ public class ActionMapper : MonoBehaviour
         
     }
 
+    public static bool GetMoveDown()
+    {
+        return Input.GetKey(KeyCode.S);
+    }
+
+    public static bool GetMoveUp()
+    {
+        return Input.GetKey(KeyCode.W);
+    }
     public static bool GetMoveLeft()
     {
-        return Input.GetKey(KeyCode.LeftArrow);
+        return Input.GetKey(KeyCode.A);
     }
 
     public static bool GetMoveRight()
     {
-        return Input.GetKey(KeyCode.RightArrow);
-    }
-    public static bool GetMoveUp()
-    {
-        return Input.GetKey(KeyCode.UpArrow);
+        return Input.GetKey(KeyCode.D);
     }
 
-    public static bool GetMoveDown()
+    public static bool HitBall()
     {
-        return Input.GetKey(KeyCode.DownArrow);
+        return Input.GetKey(KeyCode.Space);
     }
 }

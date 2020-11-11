@@ -1,13 +1,24 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using TMPro.Examples;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MatchManager : MonoBehaviour
 {
     public GameObject ball;
     public GameObject P1;
     public GameObject P2;
+    public List<Transform> P1Positions;
+    public List<Transform> P2Positions;
+    public TMP_Text textGameMode;
+    public TMP_Text textMatch;
+    public TMP_Text textScoreP1;
+    public TMP_Text textScoreP2;
+    public TMP_Text textGamesP1;
+    public TMP_Text textGamesP2;
 
     private GameManager gameManager;
     private int gamesToWin;
@@ -20,7 +31,9 @@ public class MatchManager : MonoBehaviour
     private int gameWinner;
     private int matchWinner;
     private bool isGameOver = false;
+    private int matches = 0;
     private int matchesRemaining;
+    private int servePosition = 0;
 
 
     // Start is called before the first frame update
@@ -30,12 +43,20 @@ public class MatchManager : MonoBehaviour
         
         GameManager.GameMode gameMode = gameManager.GetGameMode();
         if (gameMode == GameManager.GameMode.Tournament)
+        {
             matchesRemaining = gameManager.GetTournamentMatches();
+            textGameMode.text = "Tournament";
+        }
         else
+        {
             matchesRemaining = gameManager.GetExhibitionMatches();
-
+            textGameMode.text = "Exhibition";
+        }
+        matches = matchesRemaining;
+        textMatch.text = "1";
         gamesToWin = gameManager.GetGamesToWin();
         difficulty = gameManager.GetDifficulty();
+        setServePosition();
     }
 
     // Update is called once per frame
@@ -144,12 +165,26 @@ public class MatchManager : MonoBehaviour
 
     private void UpdateVisualScore()
     {
-        //Triggerear canvas component
+        textGamesP1.text = $"{gamesP1}";
+        textGamesP2.text = $"{gamesP2}";
+        textScoreP1.text = $"{scoreP1}";
+        textScoreP2.text = $"{scoreP2}";
     }
 
     private void ResetPoint()
     {
         //Reset de la posicion de los players y la pelota
+        setServePosition();
+    }
+
+    private void setServePosition()
+    {
+        P1.transform.position = new Vector3(P1Positions[servePosition].position.x, P1Positions[servePosition].position.y, P1Positions[servePosition].position.z);
+        P2.transform.position = new Vector3(P2Positions[servePosition].position.x, P2Positions[servePosition].position.y, P2Positions[servePosition].position.z);
+        if (servePosition == 0)
+            servePosition = 1;
+        else
+            servePosition = 0;
     }
 
     private bool IsMatchOver()
@@ -158,12 +193,14 @@ public class MatchManager : MonoBehaviour
         {
             matchWinner = 1;
             matchesRemaining--;
+            textMatch.text = $"{matches-matchesRemaining}";
             return true;
         }
         if (gamesP2 >= gamesToWin)
         {
             matchWinner = 2;
             matchesRemaining--;
+            textMatch.text = $"{matches - matchesRemaining}";
             return true;
         }
         return false;

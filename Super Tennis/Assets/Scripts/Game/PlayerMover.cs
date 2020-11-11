@@ -27,27 +27,27 @@ public class PlayerMover : MonoBehaviour
     private void ReadInput()
     {
         if (ActionMapper.GetMoveLeft())
-            xMovement = -1;
+            zMovement = 1;
         else if (ActionMapper.GetMoveRight())
+            zMovement = -1;
+        else
+            zMovement = 0;
+
+        if (ActionMapper.GetMoveDown())
+            xMovement = -1;
+        else if (ActionMapper.GetMoveUp())
             xMovement = 1;
         else
             xMovement = 0;
 
-        if (ActionMapper.GetMoveDown())
-            zMovement = -1;
-        else if (ActionMapper.GetMoveUp())
-            zMovement = 1;
-        else
-            zMovement = 0;
-
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (ActionMapper.HitBall())
             Animator.SetTrigger("Serve");
     }
 
     private void UpdatePosition()
     {
         float x = Time.deltaTime * speed * xMovement;
-        float y = 0;
+        float y = -3.067f;
         float z = Time.deltaTime * speed * zMovement;
         Vector3 newPosition = new Vector3(x, y, z);
         CharacterController.Move(newPosition);
