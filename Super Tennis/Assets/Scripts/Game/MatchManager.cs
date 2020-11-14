@@ -96,7 +96,11 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                         if (bouncePosition == expectedServePosition)
                             state = State.Game;
                         else
+                        {
                             state = State.Out;
+                            pointWinner = currentPlayer == 1 ? 2 : 1;
+                        }
+                            
                     }
                 }
                 break;
