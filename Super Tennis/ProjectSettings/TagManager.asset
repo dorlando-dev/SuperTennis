@@ -3,7 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - OpponentSquareLeft
+  - OpponentSquareRight
+  - OpponentHalf
+  - PlayerSquareLeft
+  - PlayerSquareRight
+  - PlayerHalf
   layers:
   - Default
   - TransparentFX

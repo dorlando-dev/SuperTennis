@@ -50,7 +50,7 @@ public class Player : MonoBehaviour
             hit.y = 10;
             hit.x = 15;
         }
-
+        ball.gameObject.GetComponent<Ball>().Freeze(false);
         float dist = Vector3.Distance(ball.transform.position, transform.position);
         if (dist <= hitThreshold)
         {

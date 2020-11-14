@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FrameLord;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -6,7 +7,7 @@ using TMPro.Examples;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MatchManager : MonoBehaviour
+public class MatchManager : MonoBehaviorSingleton<MatchManager>
 {
     public GameObject ball;
     public GameObject P1;
@@ -27,14 +28,37 @@ public class MatchManager : MonoBehaviour
     private string scoreP2 = "0";
     private int gamesP1 = 0;
     private int gamesP2 = 0;
-    private int pointWinner;
+    private int pointWinner = 1;
     private int gameWinner;
     private int matchWinner;
     private bool isGameOver = false;
     private int matches = 0;
     private int matchesRemaining;
     private int servePosition = 0;
+    private State state;
+    private CourtPosition expectedServePosition;
+    private int currentPlayer = 1;
+    private bool ballBounced = false;
+    private CourtPosition bouncePosition;
 
+    private enum State
+    {
+        Serve,
+        Game,
+        Out
+    }
+
+    public enum CourtPosition
+    {
+        NotSet,
+        PlayerSquareRight,
+        PlayerSquareLeft,
+        PlayerHalf,
+        OpponentSquareRight,
+        OpponentSquareLeft,
+        OpponentHalf,
+        Out
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -56,52 +80,73 @@ public class MatchManager : MonoBehaviour
         textMatch.text = "1";
         gamesToWin = gameManager.GetGamesToWin();
         difficulty = gameManager.GetDifficulty();
-        setServePosition();
+        ResetPoint();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (IsPointOver())
-        {            
-            AddScore(pointWinner);
-            UpdateVisualScore();
-            if (isGameOver)
-            {
-                if (IsMatchOver())
+        switch (state)
+        {
+            case State.Serve:
+                if (ballBounced)
                 {
-                    //Display match winner text
-                    if(matchesRemaining > 0 && matchWinner == 1)
+                    if (bouncePosition != CourtPosition.NotSet)
                     {
-                        ResetMatch();
+                        if (bouncePosition == expectedServePosition)
+                            state = State.Game;
+                        else
+                            state = State.Out;
                     }
-                    else
+                }
+                break;
+            case State.Game:
+                if (IsPointOver())
+                {
+                    state = State.Out;
+                }
+                break;
+            case State.Out:
+                Debug.Log("Serve out!");
+                AddScore(pointWinner);
+                UpdateVisualScore();
+                if (isGameOver)
+                {
+                    if (IsMatchOver())
                     {
-                        if(matchWinner == 1)
+                        //Display match winner text
+                        if (matchesRemaining > 0 && matchWinner == 1)
                         {
-                            //Display congratulations message
+                            ResetMatch();
                         }
                         else
                         {
-                            //Display lost message
+                            if (matchWinner == 1)
+                            {
+                                //Display congratulations message
+                            }
+                            else
+                            {
+                                //Display lost message
+                            }
+                            gameManager.ReturnToMenu();
                         }
-                        gameManager.ReturnToMenu();
+                    }
+                    else
+                    {
+                        //Display game winner text
+                        ResetGame();
                     }
                 }
                 else
-                {
-                    //Display game winner text
-                    ResetGame();
-                }
-            }
-            else
-                ResetPoint();
-        }   
+                    ResetPoint();
+                break;
+        }          
     }
 
     private bool IsPointOver()
     {
-        //Como verga lo determinamos?
+        
         return false;
     }
 
@@ -169,22 +214,58 @@ public class MatchManager : MonoBehaviour
         textGamesP2.text = $"{gamesP2}";
         textScoreP1.text = $"{scoreP1}";
         textScoreP2.text = $"{scoreP2}";
-    }
+    }    
 
     private void ResetPoint()
     {
-        //Reset de la posicion de los players y la pelota
-        setServePosition();
+        SetServePosition();
+        SetExpectedServePosition();
+        bouncePosition = CourtPosition.NotSet;
+        ballBounced = false;
+        ball.gameObject.GetComponent<Ball>().Freeze(true);
+        state = State.Serve;
+        UpdateVisualScore();
     }
 
-    private void setServePosition()
+    private void SetServePosition()
     {
-        P1.transform.position = new Vector3(P1Positions[servePosition].position.x, P1Positions[servePosition].position.y, P1Positions[servePosition].position.z);
+        SetPlayerPosition(new Vector3(P1Positions[servePosition].position.x, P1Positions[servePosition].position.y, P1Positions[servePosition].position.z));
         P2.transform.position = new Vector3(P2Positions[servePosition].position.x, P2Positions[servePosition].position.y, P2Positions[servePosition].position.z);
         if (servePosition == 0)
             servePosition = 1;
         else
             servePosition = 0;
+        if (currentPlayer == 1)
+            ball.transform.position = new Vector3(P1.transform.position.x, 3, P1.transform.position.z);
+        else
+            ball.transform.position = new Vector3(P2.transform.position.x, 3, P2.transform.position.z);
+    }
+
+    private void SetPlayerPosition(Vector3 position)
+    {
+        P1.gameObject.GetComponent<CharacterController>().enabled = false;
+        P1.transform.position = position;
+        P1.gameObject.GetComponent<CharacterController>().enabled = true;
+    }
+
+    private void ChangeCurrentPLayer()
+    {
+        if (currentPlayer == 1)
+            currentPlayer = 2;
+        else
+            currentPlayer = 1;
+    }
+
+    private void SetExpectedServePosition()
+    {
+        if (currentPlayer == 1 && servePosition == 1)
+            expectedServePosition = CourtPosition.OpponentSquareLeft;
+        else if (currentPlayer == 1 && servePosition == 2)
+            expectedServePosition = CourtPosition.OpponentSquareRight;
+        else if (currentPlayer == 2 && servePosition == 1)
+            expectedServePosition = CourtPosition.PlayerSquareRight;
+        else
+            expectedServePosition = CourtPosition.PlayerSquareLeft;
     }
 
     private bool IsMatchOver()
@@ -210,6 +291,7 @@ public class MatchManager : MonoBehaviour
     {
         scoreP1 = "0";
         scoreP2 = "0";
+        ChangeCurrentPLayer();
         ResetPoint();
     }
 
@@ -218,5 +300,12 @@ public class MatchManager : MonoBehaviour
         gamesP1 = 0;
         gamesP2 = 0;
         ResetGame();
+    }
+
+    public void SetBouncePosition(CourtPosition courtPosition)
+    {
+        bouncePosition = courtPosition;
+        ballBounced = true;
+        Debug.Log(bouncePosition);
     }
 }
