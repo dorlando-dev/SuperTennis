@@ -8,12 +8,14 @@ public class Player : MonoBehaviour
     public GameObject racket;
     public float hitThreshold = 2f;
     private Rigidbody ballRb;
+    BallHitter ballHitter;
 
     public Vector3 hit;
 
     void Start()
     {
         ballRb = ball.GetComponent<Rigidbody>();
+        ballHitter = new BallHitter(racket.transform);
     }
 
     void Update()
@@ -40,21 +42,20 @@ public class Player : MonoBehaviour
 
         if(Input.GetKey("up"))
         {
-            hit.y = 15;
-            hit.x = 10;
+            hit.y = 17;
+            hit.x = 17;
         } 
         else if (Input.GetKey("down"))
         {
             hit.y = 10;
-            hit.x = 10;
+            hit.x = 15;
         }
 
-
         float dist = Vector3.Distance(ball.transform.position, transform.position);
-        Debug.Log(dist);
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
+            Vector3 hit = ballHitter.hitLob();
             //ballRb.AddForce(hit.x, hit.y, hit.z, ForceMode.Impulse);
             ballRb.velocity = hit;
         }
