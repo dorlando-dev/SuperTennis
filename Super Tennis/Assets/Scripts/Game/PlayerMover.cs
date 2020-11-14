@@ -41,7 +41,7 @@ public class PlayerMover : MonoBehaviour
             xMovement = 0;
 
         if (ActionMapper.HitBall())
-            Animator.SetTrigger("Serve");
+            Animator.SetTrigger("Drive");
     }
 
     private void UpdatePosition()
