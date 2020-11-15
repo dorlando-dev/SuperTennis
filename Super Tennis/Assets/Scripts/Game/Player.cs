@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown("space"))
         {
-            Debug.Log("hitting ball");
+            //Debug.Log("hitting ball");
             hitBall();
         }
     }

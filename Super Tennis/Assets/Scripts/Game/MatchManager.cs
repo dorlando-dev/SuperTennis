@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using TMPro.Examples;
 using UnityEngine;
@@ -20,6 +21,8 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     public TMP_Text textScoreP2;
     public TMP_Text textGamesP1;
     public TMP_Text textGamesP2;
+    public TMP_Text textPointWinner;
+    public GameObject goPointWinner;
 
     private GameManager gameManager;
     private int gamesToWin;
@@ -41,14 +44,19 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     private bool ballBounced = false;
     private bool ballBouncedTwice = false;
     private CourtPosition bouncePosition;
-    private bool firstServe = true;
     private int lastHit = 0;
+
+    private float waitCounter = 0f;
+    private float waitTime = 500f;
 
     private enum State
     {
         Serve,
         Game,
-        Out
+        WaitPointOver,
+        Out,
+        WaitGameOver,
+        WaitMatchOver
     }
 
     public enum CourtPosition
@@ -97,26 +105,13 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                     if (bouncePosition != CourtPosition.NotSet)
                     {
                         if (bouncePosition == expectedServePosition)
+                        {
                             state = State.Game;
+                        }                            
                         else
                         {
-                            Debug.Log("Serve out!");
-                            if (firstServe)
-                            {
-                                firstServe = false;
-                                SetServePosition();
-                                SetExpectedServePosition();
-                                bouncePosition = CourtPosition.NotSet;
-                                ballBounced = false;
-                                ball.gameObject.GetComponent<Ball>().Freeze(true);
-                                state = State.Serve;
-                            }
-                            else
-                            {
-                                firstServe = true;
-                                state = State.Out;
-                                pointWinner = currentPlayer == 1 ? 2 : 1;
-                            }
+                            state = State.WaitPointOver;
+                            pointWinner = currentPlayer == 1 ? 2 : 1;
                         }
                             
                     }
@@ -128,41 +123,72 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                     state = State.Out;
                 }
                 break;
-            case State.Out:
+            case State.WaitPointOver:
+                DisplayPointResult("POINT " + (pointWinner == 1 ? "P1" : "P2"));
+                if (waitCounter < waitTime)
+                    waitCounter++;
+                else
+                {
+                    goPointWinner.SetActive(false);
+                    waitCounter = 0;
+                    state = State.Out;
+                }
+                break;
+            case State.Out:                
                 AddScore(pointWinner);
                 UpdateVisualScore();
                 if (isGameOver)
                 {
                     if (IsMatchOver())
                     {
-                        //Display match winner text
-                        if (matchesRemaining > 0 && matchWinner == 1)
-                        {
-                            ResetMatch();
-                        }
-                        else
-                        {
-                            if (matchWinner == 1)
-                            {
-                                //Display congratulations message
-                            }
-                            else
-                            {
-                                //Display lost message
-                            }
-                            gameManager.ReturnToMenu();
-                        }
+                        state = State.WaitMatchOver;
                     }
                     else
                     {
-                        //Display game winner text
-                        ResetGame();
+                        state = State.WaitGameOver;
                     }
                 }
                 else
                     ResetPoint();
                 break;
+
+            case State.WaitGameOver:
+                DisplayPointResult("Game " + (gameWinner == 1 ? "P1" : "P2"));
+                if (waitCounter < waitTime)
+                    waitCounter++;
+                else
+                {
+                    goPointWinner.SetActive(false);
+                    waitCounter = 0;
+                    ResetGame();
+                }
+                break;
+
+            case State.WaitMatchOver:
+                DisplayPointResult((matchWinner == 1 ? "P1" : "P2") + " wins");
+                if (waitCounter < waitTime)
+                    waitCounter++;
+                else
+                {
+                    goPointWinner.SetActive(false);
+                    waitCounter = 0;
+                    if (matchesRemaining > 0 && matchWinner == 1)
+                    {
+                        ResetMatch();
+                    }
+                    else
+                    {
+                        gameManager.ReturnToMenu();
+                    }                    
+                }
+                break;
         }          
+    }
+
+    private void DisplayPointResult(string text)
+    {
+        textPointWinner.text = text;
+        goPointWinner.SetActive(true);
     }
 
     private bool IsPointOver()
@@ -288,6 +314,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     {
         SetServePosition();
         SetExpectedServePosition();
+        ChangeServePosition();
         bouncePosition = CourtPosition.NotSet;
         ballBounced = false;
         ballBouncedTwice = false;
@@ -296,17 +323,18 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         UpdateVisualScore();
     }
 
+    private void ChangeServePosition()
+    {
+        if (servePosition == 0)
+            servePosition = 1;
+        else
+            servePosition = 0;
+    }
+
     private void SetServePosition()
     {
         SetPlayerPosition(new Vector3(P1Positions[servePosition].position.x, P1Positions[servePosition].position.y, P1Positions[servePosition].position.z));
         P2.transform.position = new Vector3(P2Positions[servePosition].position.x, P2Positions[servePosition].position.y, P2Positions[servePosition].position.z);
-        if (!firstServe)
-        {
-            if (servePosition == 0)
-                servePosition = 1;
-            else
-                servePosition = 0;
-        }
         if (currentPlayer == 1)
             ball.transform.position = new Vector3(P1.transform.position.x, 3, P1.transform.position.z);
         else
@@ -330,11 +358,11 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
 
     private void SetExpectedServePosition()
     {
-        if (currentPlayer == 1 && servePosition == 1)
+        if (currentPlayer == 1 && servePosition == 0)
             expectedServePosition = CourtPosition.OpponentSquareLeft;
-        else if (currentPlayer == 1 && servePosition == 2)
+        else if (currentPlayer == 1 && servePosition == 1)
             expectedServePosition = CourtPosition.OpponentSquareRight;
-        else if (currentPlayer == 2 && servePosition == 1)
+        else if (currentPlayer == 2 && servePosition == 0)
             expectedServePosition = CourtPosition.PlayerSquareRight;
         else
             expectedServePosition = CourtPosition.PlayerSquareLeft;
@@ -363,12 +391,14 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     {
         scoreP1 = "0";
         scoreP2 = "0";
+        isGameOver = false;
         ChangeCurrentPLayer();
+        servePosition = 0;
         ResetPoint();
     }
 
     private void ResetMatch()
-    {
+    {        
         gamesP1 = 0;
         gamesP2 = 0;
         ResetGame();

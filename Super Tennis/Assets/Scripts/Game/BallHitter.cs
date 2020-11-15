@@ -54,8 +54,8 @@ public class BallHitter
         float vx = Mathf.Sqrt(0.5f*(g*(pX*dX - pX*pX))/(netTargetHeight + pX*y0/dX - y0));
         float vy = 0.5f*g*dX/vx - y0*vx/dX;
 
-        Debug.Log(vx);
-        Debug.Log(vy);
+        //Debug.Log(vx);
+        //Debug.Log(vy);
 
         return new Vector3(vx, vy, 0f);
     }
