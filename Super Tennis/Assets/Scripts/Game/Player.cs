@@ -29,26 +29,24 @@ public class Player : MonoBehaviour
 
     void hitBall()
     {
-        float z = 0;
+        BallHitter.Side side = BallHitter.Side.Center;
         if(Input.GetKey("left"))
         {
-            z = 8;
+            side = BallHitter.Side.Left;
         }
         else if(Input.GetKey("right"))
         {
-            z = -8;
+            side = BallHitter.Side.Right;
         }
-        hit.z = z;
 
+        BallHitter.Strength depth = BallHitter.Strength.Middle;
         if(Input.GetKey("up"))
         {
-            hit.y = 17;
-            hit.x = 17;
+            depth = BallHitter.Strength.Lob;
         } 
         else if (Input.GetKey("down"))
         {
-            hit.y = 10;
-            hit.x = 15;
+            depth = BallHitter.Strength.Drop;
         }
         ball.gameObject.GetComponent<Ball>().Freeze(false);
         MatchManager.Instance.SetLastHit(1);
@@ -56,8 +54,7 @@ public class Player : MonoBehaviour
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
-            Vector3 hit = ballHitter.hitLob();
-            //ballRb.AddForce(hit.x, hit.y, hit.z, ForceMode.Impulse);
+            Vector3 hit = ballHitter.hitBall(side, depth, ball.transform.position, 1f);
             ballRb.velocity = hit;
         }
     }
