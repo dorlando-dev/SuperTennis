@@ -51,6 +51,7 @@ public class Player : MonoBehaviour
             hit.x = 15;
         }
         ball.gameObject.GetComponent<Ball>().Freeze(false);
+        MatchManager.Instance.SetLastHit(1);
         float dist = Vector3.Distance(ball.transform.position, transform.position);
         if (dist <= hitThreshold)
         {

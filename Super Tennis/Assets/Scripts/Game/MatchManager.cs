@@ -39,7 +39,10 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     private CourtPosition expectedServePosition;
     private int currentPlayer = 1;
     private bool ballBounced = false;
+    private bool ballBouncedTwice = false;
     private CourtPosition bouncePosition;
+    private bool firstServe = true;
+    private int lastHit = 0;
 
     private enum State
     {
@@ -97,8 +100,23 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                             state = State.Game;
                         else
                         {
-                            state = State.Out;
-                            pointWinner = currentPlayer == 1 ? 2 : 1;
+                            Debug.Log("Serve out!");
+                            if (firstServe)
+                            {
+                                firstServe = false;
+                                SetServePosition();
+                                SetExpectedServePosition();
+                                bouncePosition = CourtPosition.NotSet;
+                                ballBounced = false;
+                                ball.gameObject.GetComponent<Ball>().Freeze(true);
+                                state = State.Serve;
+                            }
+                            else
+                            {
+                                firstServe = true;
+                                state = State.Out;
+                                pointWinner = currentPlayer == 1 ? 2 : 1;
+                            }
                         }
                             
                     }
@@ -111,7 +129,6 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                 }
                 break;
             case State.Out:
-                Debug.Log("Serve out!");
                 AddScore(pointWinner);
                 UpdateVisualScore();
                 if (isGameOver)
@@ -150,8 +167,55 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
 
     private bool IsPointOver()
     {
-        
+        if (ballBounced)
+        {
+            if (bouncePosition == CourtPosition.Out)
+            {
+                if (lastHit == 1)
+                    pointWinner = 2;
+                else
+                    pointWinner = 1;
+                return true;
+            }
+            else if (lastHit == 1)
+            {
+                if (!ballBouncedTwice)
+                {
+                    if (bouncePosition == CourtPosition.PlayerHalf || bouncePosition == CourtPosition.PlayerSquareLeft || bouncePosition == CourtPosition.PlayerSquareRight)
+                    {
+                        pointWinner = 2;
+                        return true;
+                    }
+                }
+                else
+                {
+                    pointWinner = 2;
+                    return true;
+                }
+            }
+            else if (lastHit == 2)
+            {
+                if (!ballBouncedTwice)
+                {
+                    if (bouncePosition == CourtPosition.OpponentHalf || bouncePosition == CourtPosition.OpponentSquareLeft || bouncePosition == CourtPosition.OpponentSquareRight)
+                    {
+                        pointWinner = 1;
+                        return true;
+                    }
+                }
+                else
+                {
+                    pointWinner = 1;
+                    return true;
+                }
+            }
+        }
         return false;
+    }
+
+    public void SetLastHit(int player)
+    {
+        lastHit = player;
     }
 
     private void AddScore(int player)
@@ -226,6 +290,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         SetExpectedServePosition();
         bouncePosition = CourtPosition.NotSet;
         ballBounced = false;
+        ballBouncedTwice = false;
         ball.gameObject.GetComponent<Ball>().Freeze(true);
         state = State.Serve;
         UpdateVisualScore();
@@ -235,10 +300,13 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     {
         SetPlayerPosition(new Vector3(P1Positions[servePosition].position.x, P1Positions[servePosition].position.y, P1Positions[servePosition].position.z));
         P2.transform.position = new Vector3(P2Positions[servePosition].position.x, P2Positions[servePosition].position.y, P2Positions[servePosition].position.z);
-        if (servePosition == 0)
-            servePosition = 1;
-        else
-            servePosition = 0;
+        if (!firstServe)
+        {
+            if (servePosition == 0)
+                servePosition = 1;
+            else
+                servePosition = 0;
+        }
         if (currentPlayer == 1)
             ball.transform.position = new Vector3(P1.transform.position.x, 3, P1.transform.position.z);
         else
@@ -309,7 +377,9 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     public void SetBouncePosition(CourtPosition courtPosition)
     {
         bouncePosition = courtPosition;
-        ballBounced = true;
-        Debug.Log(bouncePosition);
+        if (ballBounced)
+            ballBouncedTwice = true;
+        else
+            ballBounced = true;
     }
 }
