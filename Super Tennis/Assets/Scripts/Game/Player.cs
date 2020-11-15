@@ -9,6 +9,15 @@ public class Player : MonoBehaviour
     public float hitThreshold = 2f;
     private Rigidbody ballRb;
     BallHitter ballHitter;
+    private float waitCounter = 0f;
+    private float waitTime = 330f;
+    private State state = State.Play;
+
+    private enum State
+    {
+        Play,
+        WaitAnimation
+    }
 
     public Vector3 hit;
 
@@ -20,11 +29,28 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown("space"))
+        switch (state)
         {
-            //Debug.Log("hitting ball");
-            hitBall();
+            case State.Play:
+                if (Input.GetKeyDown("space"))
+                {
+                    //Debug.Log("hitting ball");
+                    state = State.WaitAnimation;                    
+                }
+                break;
+
+            case State.WaitAnimation:
+                if (waitCounter < waitTime)
+                    waitCounter++;
+                else
+                {
+                    hitBall();
+                    state = State.Play;
+                    waitCounter = 0;
+                }
+                break;
         }
+        
     }
 
     void hitBall()
