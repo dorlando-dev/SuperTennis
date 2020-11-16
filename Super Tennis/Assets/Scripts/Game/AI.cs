@@ -13,6 +13,7 @@ public class AI : MonoBehaviour
     public float hitThreshold = 5f;
     private Rigidbody ballRb;
     BallHitter ballHitter;
+    public Transform center;
 
     private float waitTime = 0f;
     private float waitingToServeTime = 500f;
@@ -148,6 +149,7 @@ public class AI : MonoBehaviour
 
     private void MoveToBall()
     {
+        /*
         if (transform.position.x < ballDestination.x)
             xMovement = 1;
         else if (transform.position.x > ballDestination.x)
@@ -157,6 +159,10 @@ public class AI : MonoBehaviour
         else if (transform.position.z < ballDestination.z)
             zMovement = -1;
         rb.velocity = new Vector3(xMovement * speed, 0, zMovement * speed);
+        */
+        Vector3 direction = (ballDestination - transform.position).normalized;
+        direction.y = 0f;
+        rb.velocity = direction * speed;
     }
 
     private void Stop()
@@ -188,6 +194,8 @@ public class AI : MonoBehaviour
 
     private void MoveToCenter()
     {
-
+        Vector3 direction = (center.position - transform.position).normalized;
+        direction.y = 0f;
+        rb.velocity = direction * speed;
     }
 }
