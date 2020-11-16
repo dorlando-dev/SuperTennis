@@ -459,4 +459,10 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
             bouncePosition = courtPosition;
         }
     }
+
+
+    public int GetCurrentPlayer()
+    {
+        return currentPlayer;
+    }
 }

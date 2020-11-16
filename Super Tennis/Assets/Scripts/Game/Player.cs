@@ -90,7 +90,9 @@ public class Player : MonoBehaviour
         {
             depth = BallHitter.Strength.Drop;
         }
-        ball.gameObject.GetComponent<Ball>().Freeze(false);
+
+        if(MatchManager.Instance.GetCurrentPlayer() == 1)
+            ball.gameObject.GetComponent<Ball>().Freeze(false);
                 
         float dist = Vector3.Distance(ball.transform.position, transform.position);
         if (dist <= hitThreshold)
