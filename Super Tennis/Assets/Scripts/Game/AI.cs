@@ -114,7 +114,34 @@ public class AI : MonoBehaviour
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
-            Vector3 hit = ballHitter.hitBall(BallHitter.Side.Center, BallHitter.Strength.Middle, difficulty, false)[1];
+            BallHitter.Side side;
+            float sideR = UnityEngine.Random.value;
+            if(sideR < 0.33)
+            {
+                side = BallHitter.Side.Left;
+            } else if (sideR < 0.66)
+            {
+                side = BallHitter.Side.Center;
+            } else
+            {
+                side = BallHitter.Side.Right;
+            }
+
+            BallHitter.Strength depth;
+            float depthR = UnityEngine.Random.value;
+            if(depthR < 0.15)
+            {
+                depth = BallHitter.Strength.Drop;
+            } else if (depthR < 0.8)
+            {
+                depth = BallHitter.Strength.Middle;
+            } else
+            {
+                depth = BallHitter.Strength.Lob;
+            }
+
+
+            Vector3 hit = ballHitter.hitBall(side, depth, difficulty, false)[1];
             ballRb.velocity = hit;
             MatchManager.Instance.SetLastHit(2, Vector3.zero);
         }
