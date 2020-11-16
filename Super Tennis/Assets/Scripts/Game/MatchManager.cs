@@ -439,6 +439,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     {        
         gamesP1 = 0;
         gamesP2 = 0;
+        difficulty++;
         ResetGame();
     }
 

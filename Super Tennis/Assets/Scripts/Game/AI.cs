@@ -57,7 +57,6 @@ public class AI : MonoBehaviour
                     waitTime++;
                 else
                 {
-                    //Animator.SetTrigger("Serve");
                     state = State.WaitAnimation;
                     from = State.Serve;
                     waitTime = 0;
@@ -100,7 +99,6 @@ public class AI : MonoBehaviour
                 {
                     state = State.WaitAnimation;
                     from = State.HitBall;
-                    //Animator.SetTrigger("Drive");
                 }
                 break;
             case State.Stop:
@@ -118,19 +116,20 @@ public class AI : MonoBehaviour
             ball.transform.position = racket.transform.position;
             Vector3 hit = ballHitter.hitBall(BallHitter.Side.Center, BallHitter.Strength.Middle, difficulty, false);
             ballRb.velocity = hit;
+            MatchManager.Instance.SetLastHit(2, Vector3.zero);
         }
     }
 
     void Serve()
     {
-        ball.gameObject.GetComponent<Ball>().Freeze(false);
-        MatchManager.Instance.SetLastHit(2, Vector3.zero);
+        ball.gameObject.GetComponent<Ball>().Freeze(false);        
         float dist = Vector3.Distance(ball.transform.position, transform.position);
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
             Vector3 hit = ballHitter.serve(BallHitter.Side.Center, serveSide, difficulty, false);
             ballRb.velocity = hit;
+            MatchManager.Instance.SetLastHit(2, Vector3.zero);
         }
     }
 
