@@ -44,7 +44,7 @@ public class Player : MonoBehaviour
                     waitCounter++;
                 else
                 {
-                    hitBall();
+                    HitBall();
                     state = State.Play;
                     waitCounter = 0;
                 }
@@ -53,7 +53,7 @@ public class Player : MonoBehaviour
         
     }
 
-    void hitBall()
+    void HitBall()
     {
         BallHitter.Side side = BallHitter.Side.Center;
         if(Input.GetKey("left"))
@@ -75,13 +75,14 @@ public class Player : MonoBehaviour
             depth = BallHitter.Strength.Drop;
         }
         ball.gameObject.GetComponent<Ball>().Freeze(false);
-        MatchManager.Instance.SetLastHit(1);
+                
         float dist = Vector3.Distance(ball.transform.position, transform.position);
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
             Vector3 hit = ballHitter.hitBall(side, depth, 0.8f, true);
             ballRb.velocity = hit;
+            MatchManager.Instance.SetLastHit(1, new Vector3(0, 0, 0));
         }
     }
 }
