@@ -440,6 +440,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         gamesP1 = 0;
         gamesP2 = 0;
         difficulty++;
+        P2.GetComponent<AI>().SetDifficulty(difficulty);
         ResetGame();
     }
 

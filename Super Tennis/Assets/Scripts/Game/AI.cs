@@ -220,16 +220,18 @@ public class AI : MonoBehaviour
         if (newDifficulty == 1)
         {
             difficulty = 0.7f;
+            speed = 6;
         }
         else if (newDifficulty == 2)
         {
             difficulty = 0.8f;
+            speed = 8;
         }
         else if (newDifficulty == 3)
         {
             difficulty = 0.9f;
+            speed = 10;
         }
-        speed *= difficulty;
     }
 
     private void MoveToCenter()
