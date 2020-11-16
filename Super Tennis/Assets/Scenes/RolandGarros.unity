@@ -2857,7 +2857,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ball: {fileID: 1469426002}
   racket: {fileID: 1179051196}
-  hitThreshold: 5
+  hitThreshold: 10
   animator: {fileID: 278419475}
   hit: {x: 40, y: 6, z: 0}
 --- !u!1 &279456541

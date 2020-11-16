@@ -197,7 +197,6 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     {
         if (ballBounced)
         {
-            Debug.Log("A");
             if(ballBouncedTwice)
             {
                 if (lastHit == 1)
@@ -208,7 +207,6 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
             }
             else if (bouncePosition == CourtPosition.Out)
             {
-                Debug.Log("H");
                 if (lastHit == 1)
                     pointWinner = 2;
                 else

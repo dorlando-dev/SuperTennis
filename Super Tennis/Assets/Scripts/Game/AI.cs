@@ -56,7 +56,7 @@ public class AI : MonoBehaviour
                     waitTime++;
                 else
                 {
-                    Animator.SetTrigger("Serve");
+                    //Animator.SetTrigger("Serve");
                     state = State.WaitAnimation;
                     from = State.Serve;
                     waitTime = 0;
@@ -82,6 +82,7 @@ public class AI : MonoBehaviour
                 }
                 break;
             case State.MoveToCenter:
+                MoveToCenter();
                 break;
             case State.MovingToBall:
                 MoveToBall();
@@ -90,7 +91,7 @@ public class AI : MonoBehaviour
                 {
                     state = State.WaitAnimation;
                     from = State.HitBall;
-                    Animator.SetTrigger("Drive");
+                    //Animator.SetTrigger("Drive");
                 }
                 break;
             case State.Stop:
@@ -175,5 +176,10 @@ public class AI : MonoBehaviour
             difficulty = 0.75f;
         else if (newDifficulty == 3)
             difficulty = 1f;
+    }
+
+    private void MoveToCenter()
+    {
+
     }
 }

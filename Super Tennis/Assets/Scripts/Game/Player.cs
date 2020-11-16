@@ -11,10 +11,12 @@ public class Player : MonoBehaviour
     private Rigidbody ballRb;
     BallHitter ballHitter;
     private float waitCounter = 0f;
-    private float waitTime = 350f;
+    private float waitTime = 300f;
     private State state = State.Play;
     private State from;
     private BallHitter.Side serveSide;
+    private BallHitter.Side hitSide;
+    private BallHitter.Strength hitStrength;
 
     public enum State
     {
@@ -41,14 +43,17 @@ public class Player : MonoBehaviour
                     animator.SetTrigger("Serve");
                     state = State.WaitAnimation;
                     from = State.Serve;
+                    GetShotType();
                 }
                 break;
             case State.Play:
                 if (Input.GetKeyDown("space"))
                 {
-                    animator.SetTrigger("Drive");
-                    state = State.WaitAnimation;
+                    //animator.SetTrigger("Drive");
+                    //state = State.Play;
                     from = State.Play;
+                    GetShotType();
+                    HitBall();
                 }
                 break;
 
@@ -69,28 +74,40 @@ public class Player : MonoBehaviour
         
     }
 
-    void HitBall()
+    private void GetShotType()
     {
-        BallHitter.Side side = BallHitter.Side.Center;
-        if(Input.GetKey("left"))
+        hitSide = BallHitter.Side.Center;
+        if (Input.GetKey("left"))
         {
-            side = BallHitter.Side.Left;
+            hitSide = BallHitter.Side.Left;
         }
-        else if(Input.GetKey("right"))
+        else if (Input.GetKey("right"))
         {
-            side = BallHitter.Side.Right;
+            hitSide = BallHitter.Side.Right;
         }
 
-        BallHitter.Strength depth = BallHitter.Strength.Middle;
-        if(Input.GetKey("up"))
+        hitStrength = BallHitter.Strength.Middle;
+        if (Input.GetKey("up"))
         {
-            depth = BallHitter.Strength.Lob;
-        } 
+            hitStrength = BallHitter.Strength.Lob;
+        }
         else if (Input.GetKey("down"))
         {
-            depth = BallHitter.Strength.Drop;
+            hitStrength = BallHitter.Strength.Drop;
         }
+        if(from == State.Play)
+        {
+            if (hitStrength == BallHitter.Strength.Drop)
+                animator.SetTrigger("Strafe");
+            else if (hitStrength == BallHitter.Strength.Lob)
+                animator.SetTrigger("PowerfullShot");
+            else
+                animator.SetTrigger("Drive");
+        }
+    }
 
+    void HitBall()
+    {
         if(MatchManager.Instance.GetCurrentPlayer() == 1)
             ball.gameObject.GetComponent<Ball>().Freeze(false);
                 
@@ -98,7 +115,7 @@ public class Player : MonoBehaviour
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
-            Vector3 hit = ballHitter.hitBall(side, depth, 0.8f, true);
+            Vector3 hit = ballHitter.hitBall(hitSide, hitStrength, 0.8f, true);
             ballRb.velocity = hit;
             MatchManager.Instance.SetLastHit(1, new Vector3(0, 0, 0));
         }
@@ -106,22 +123,13 @@ public class Player : MonoBehaviour
 
     void Serve()
     {
-        BallHitter.Side side = BallHitter.Side.Center;
-        if (Input.GetKey("left"))
-        {
-            side = BallHitter.Side.Left;
-        }
-        else if (Input.GetKey("right"))
-        {
-            side = BallHitter.Side.Right;
-        }
         ball.gameObject.GetComponent<Ball>().Freeze(false);
         MatchManager.Instance.SetLastHit(1, Vector3.zero);
         float dist = Vector3.Distance(ball.transform.position, transform.position);
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
-            Vector3 hit = ballHitter.serve(side, serveSide, 1f, true);
+            Vector3 hit = ballHitter.serve(hitSide, serveSide, 1f, true);
             ballRb.velocity = hit;
         }
     }
