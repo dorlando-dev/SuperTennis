@@ -16,7 +16,7 @@ public class AI : MonoBehaviour
 
     private float waitTime = 0f;
     private float waitingToServeTime = 500f;
-    private float waitAnimationTime = 0f;
+    private float waitAnimationTime = 300f;
     private int counter = 0;
 
     private State state = State.MoveToCenter;
@@ -72,12 +72,20 @@ public class AI : MonoBehaviour
                 state = State.MoveToCenter;
                 break;
             case State.WaitAnimation:
-                if (waitTime < waitAnimationTime)
-                    waitTime++;
+                if (from == State.Serve)
+                {
+                    if (waitTime < waitAnimationTime)
+                        waitTime++;
+                    else
+                    {
+                        state = State.Serve;
+                        waitTime = 0;
+                        Stop();
+                    }
+                }
                 else
                 {
-                    state = from;
-                    waitTime = 0;
+                    state = State.HitBall;
                     Stop();
                 }
                 break;
