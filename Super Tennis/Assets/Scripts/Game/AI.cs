@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AI : MonoBehaviour
 {
-    public int speed = 5;
+    private float speed = 10f;
     public CharacterController CharacterController;
     public Animator Animator;
     public Rigidbody rb;
@@ -61,6 +61,7 @@ public class AI : MonoBehaviour
                     from = State.Serve;
                     waitTime = 0;
                     Stop();
+                    Animator.SetTrigger("Serve");
                 }
                 break;
             case State.Serve:
@@ -132,12 +133,15 @@ public class AI : MonoBehaviour
             if(depthR < 0.15)
             {
                 depth = BallHitter.Strength.Drop;
+                Animator.SetTrigger("Strafe");
             } else if (depthR < 0.8)
             {
                 depth = BallHitter.Strength.Middle;
+                Animator.SetTrigger("Drive");
             } else
             {
                 depth = BallHitter.Strength.Lob;
+                Animator.SetTrigger("PowerfullShot");
             }
 
 
@@ -189,17 +193,6 @@ public class AI : MonoBehaviour
 
     private void MoveToBall()
     {
-        /*
-        if (transform.position.x < ballDestination.x)
-            xMovement = 1;
-        else if (transform.position.x > ballDestination.x)
-            xMovement = -1;
-        if (transform.position.z < ballDestination.z)
-            zMovement = 1;
-        else if (transform.position.z < ballDestination.z)
-            zMovement = -1;
-        rb.velocity = new Vector3(xMovement * speed, 0, zMovement * speed);
-        */
         Vector3 direction = (ballDestination - transform.position).normalized;
         direction.y = 0f;
         rb.velocity = direction * speed;
@@ -225,11 +218,18 @@ public class AI : MonoBehaviour
     public void SetDifficulty(int newDifficulty)
     {
         if (newDifficulty == 1)
-            difficulty = 0.5f;
+        {
+            difficulty = 0.7f;
+        }
         else if (newDifficulty == 2)
-            difficulty = 0.75f;
+        {
+            difficulty = 0.8f;
+        }
         else if (newDifficulty == 3)
-            difficulty = 1f;
+        {
+            difficulty = 0.9f;
+        }
+        speed *= difficulty;
     }
 
     private void MoveToCenter()

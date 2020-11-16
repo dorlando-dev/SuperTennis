@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
     private BallHitter.Side serveSide;
     private BallHitter.Side hitSide;
     private BallHitter.Strength hitStrength;
+    private float accuracy = 0.8f;
 
     public enum State
     {
@@ -49,8 +50,6 @@ public class Player : MonoBehaviour
             case State.Play:
                 if (Input.GetKeyDown("space"))
                 {
-                    //animator.SetTrigger("Drive");
-                    //state = State.Play;
                     from = State.Play;
                     GetShotType();
                     HitBall();
@@ -115,7 +114,7 @@ public class Player : MonoBehaviour
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
-            List<Vector3> ret = ballHitter.hitBall(hitSide, hitStrength, 0.8f, true);
+            List<Vector3> ret = ballHitter.hitBall(hitSide, hitStrength, accuracy, true);
             ballRb.velocity = ret[1];
             MatchManager.Instance.SetLastHit(1, ret[0]);
         }
@@ -128,7 +127,7 @@ public class Player : MonoBehaviour
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
-            List<Vector3> ret = ballHitter.serve(hitSide, serveSide, 1f, true);
+            List<Vector3> ret = ballHitter.serve(hitSide, serveSide, accuracy, true);
             ballRb.velocity = ret[1];
             MatchManager.Instance.SetLastHit(1, ret[0]);
         }
