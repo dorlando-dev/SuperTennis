@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-
-
-
 public class BallHitter
 {
     public enum Side
@@ -23,43 +20,103 @@ public class BallHitter
     }
     Transform racket;
     float sideWidth = 27.41f, sideLength = 38.95f, netHeight = 3.4f;
-    float g = 9.8f;
+    float serveWidth = 13.94f, serveLength = 21.06f;
+    float g = -Physics.gravity.y;
 
     public BallHitter(Transform racket)
     {
         this.racket = racket;
     }
 
-    public Vector3 hitBall(Side side, Strength strength, Vector3 ballPos, float accuracy)
+    public Vector3 hitBall(Side side, Strength strength, float accuracy)
     {
         Vector2 pPos = new Vector2(racket.position.x, racket.position.y);
 
+        float netTargetHeight = 1f;
+        if(strength == Strength.Lob)
+        {
+            netTargetHeight = 3f;
+        } 
+        else if(strength == Strength.Drop)
+        {
+            netTargetHeight = 0.5f;
+        }
+
+        Vector2 tPos = getTargetPosition(side, strength, Side.Center, sideLength, sideWidth, true);
+
+        Vector3 vel = hitTowardsPoint(tPos, netTargetHeight);
+        return applyError(vel, accuracy);
+    }
+
+    public Vector3 serve(Side side, Side serve, float accuracy)
+    {
+        Vector2 pPos = new Vector2(racket.position.x, racket.position.y);
+
+        float netTargetHeight = 0.6f;
+
+        Vector2 tPos = getTargetPosition(side, Strength.Lob, serve, serveLength, serveWidth, true);
+
+        Vector3 vel = hitTowardsPoint(tPos, netTargetHeight);
+        return applyError(vel, accuracy);
+    }
+
+    public Vector2 getTargetPosition(Side side, Strength strength, Side serve, float depth, float width, bool isPlayer)
+    {
         float targetDepthR = 0.6f;
-        float netTargetHeight = 0.5f;
         if(strength == Strength.Lob)
         {
             targetDepthR = 0.85f;
-            netTargetHeight = 2f;
         } 
         else if(strength == Strength.Drop)
         {
             targetDepthR = 0.2f;
-            netTargetHeight = 0.3f;
         }
 
-        float targetSideR = 0f;
+        float targetSideR = 0.5f;
         if(side == Side.Right)
         {
-            targetSideR = -0.4f;
+            targetSideR = 0.9f;
         }
         else if(side == Side.Left)
         {
-            targetSideR = 0.4f;
+            targetSideR = 0.1f;
         }
 
-        Vector2 tPos = new Vector2(sideLength*targetDepthR, sideWidth*targetSideR);
+        float tX = depth * targetDepthR;
+        float tZ;
+        if (serve == Side.Center)
+        {
+            // Not serving.
+            tZ = width*(0.5f - targetSideR);
+        }
+        else if (serve == Side.Left)
+        {
+            tZ = width * targetSideR;
+        }
+        else
+        {
+            tZ = - width * targetSideR;
+        }
 
-        return hitTowardsPoint(tPos, netTargetHeight);
+        if (!isPlayer)
+        {
+            tX = -tX;
+            tZ = -tZ;
+        }
+
+
+        return new Vector2(tX, tZ);
+    }
+
+    public Vector3 applyError(Vector3 v, float accuracy)
+    {   
+        float dX = (UnityEngine.Random.value - 0.5f)*(1 - accuracy);
+        float vx = v.x*(1f + dX);
+        float dY = (UnityEngine.Random.value - 0.5f)*(1 - accuracy);
+        float vy = v.y*(1f + dY);
+        float dZ = (UnityEngine.Random.value - 0.5f)*(1 - accuracy);
+        float vz = v.z*(1f + dZ);
+        return new Vector3(vx, vy, vz);
     }
 
     public Vector3 hitTowardsPoint(Vector2 target, float netHeight) {
