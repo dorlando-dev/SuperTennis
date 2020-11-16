@@ -23,6 +23,8 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     public TMP_Text textGamesP2;
     public TMP_Text textPointWinner;
     public GameObject goPointWinner;
+    public AudioSource audioClipHitP1Wins;
+    public AudioSource audioClipHitP2Wins;
 
     private GameManager gameManager;
     private int gamesToWin;
@@ -126,6 +128,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                 }
                 break;
             case State.WaitPointOver:
+                TriggerSound();
                 DisplayPointResult("POINT " + (pointWinner == 1 ? "P1" : "P2"));
                 if (waitCounter < waitTime)
                     waitCounter++;
@@ -138,7 +141,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                 break;
             case State.Out:                
                 AddScore(pointWinner);
-                UpdateVisualScore();                
+                UpdateVisualScore();
                 if (isGameOver)
                 {
                     if (IsMatchOver())
@@ -185,6 +188,14 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                 }
                 break;
         }          
+    }
+
+    private void TriggerSound()
+    {
+        if (pointWinner == 1)
+            audioClipHitP1Wins.Play();
+        else if (pointWinner == 2)
+            audioClipHitP2Wins.Play();
     }
 
     private void DisplayPointResult(string text)

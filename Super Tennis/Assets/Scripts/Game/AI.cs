@@ -10,6 +10,7 @@ public class AI : MonoBehaviour
     public Rigidbody rb;
     public GameObject ball;
     public GameObject racket;
+    public AudioSource audioClipHitBall;
     public float hitThreshold = 5f;
     private Rigidbody ballRb;
     BallHitter ballHitter;
@@ -148,6 +149,7 @@ public class AI : MonoBehaviour
             Vector3 hit = ballHitter.hitBall(side, depth, difficulty, false)[1];
             ballRb.velocity = hit;
             MatchManager.Instance.SetLastHit(2, Vector3.zero);
+            audioClipHitBall.Play();
         }
     }
 
@@ -175,6 +177,7 @@ public class AI : MonoBehaviour
             Vector3 hit = ballHitter.serve(side, serveSide, difficulty, false)[1];
             ballRb.velocity = hit;
             MatchManager.Instance.SetLastHit(2, Vector3.zero);
+            audioClipHitBall.Play();
         }
     }
 

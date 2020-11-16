@@ -7,6 +7,7 @@ public class Ball : MonoBehaviour
 {
     private bool freeze = true;
     public Rigidbody rigidbody;
+    public AudioSource audioClipBounce;
 
     // Start is called before the first frame update
     void Start()
@@ -45,6 +46,7 @@ public class Ball : MonoBehaviour
         }
         else
             MatchManager.Instance.SetBouncePosition(MatchManager.CourtPosition.Out);
+        audioClipBounce.Play();
     }
 
     public void Freeze(bool value)

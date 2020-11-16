@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     private BallHitter.Side hitSide;
     private BallHitter.Strength hitStrength;
     private float accuracy = 0.8f;
+    public AudioSource audioClipHitBall;
 
     public enum State
     {
@@ -117,6 +118,7 @@ public class Player : MonoBehaviour
             List<Vector3> ret = ballHitter.hitBall(hitSide, hitStrength, accuracy, true);
             ballRb.velocity = ret[1];
             MatchManager.Instance.SetLastHit(1, ret[0]);
+            audioClipHitBall.Play();
         }
     }
 
@@ -130,6 +132,7 @@ public class Player : MonoBehaviour
             List<Vector3> ret = ballHitter.serve(hitSide, serveSide, accuracy, true);
             ballRb.velocity = ret[1];
             MatchManager.Instance.SetLastHit(1, ret[0]);
+            audioClipHitBall.Play();
         }
     }
 
