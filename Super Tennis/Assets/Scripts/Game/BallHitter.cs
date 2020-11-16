@@ -28,7 +28,7 @@ public class BallHitter
         this.racket = racket;
     }
 
-    public Vector3 hitBall(Side side, Strength strength, float accuracy)
+    public Vector3 hitBall(Side side, Strength strength, float accuracy, bool isPlayer)
     {
         Vector2 pPos = new Vector2(racket.position.x, racket.position.y);
 
@@ -42,19 +42,19 @@ public class BallHitter
             netTargetHeight = 0.5f;
         }
 
-        Vector2 tPos = getTargetPosition(side, strength, Side.Center, sideLength, sideWidth, true);
+        Vector2 tPos = getTargetPosition(side, strength, Side.Center, sideLength, sideWidth, isPlayer);
 
         Vector3 vel = hitTowardsPoint(tPos, netTargetHeight);
         return applyError(vel, accuracy);
     }
 
-    public Vector3 serve(Side side, Side serve, float accuracy)
+    public Vector3 serve(Side side, Side serve, float accuracy, bool isPlayer)
     {
         Vector2 pPos = new Vector2(racket.position.x, racket.position.y);
 
         float netTargetHeight = 0.6f;
 
-        Vector2 tPos = getTargetPosition(side, Strength.Lob, serve, serveLength, serveWidth, true);
+        Vector2 tPos = getTargetPosition(side, Strength.Lob, serve, serveLength, serveWidth, isPlayer);
 
         Vector3 vel = hitTowardsPoint(tPos, netTargetHeight);
         return applyError(vel, accuracy);

@@ -80,8 +80,7 @@ public class Player : MonoBehaviour
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
-            Vector3 hit = ballHitter.hitBall(side, depth, 0.8f);
-            Debug.Log("ball v: " + hit);
+            Vector3 hit = ballHitter.hitBall(side, depth, 0.8f, true);
             ballRb.velocity = hit;
         }
     }
