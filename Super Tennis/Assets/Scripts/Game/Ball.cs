@@ -25,7 +25,8 @@ public class Ball : MonoBehaviour
     } 
 
     private void OnCollisionEnter(Collision collision)
-    {       
+    {
+        Debug.Log(collision.gameObject.tag);
         if (collision.gameObject.tag == "OpponentSquareLeft")
             MatchManager.Instance.SetBouncePosition(MatchManager.CourtPosition.OpponentSquareLeft);
         else if (collision.gameObject.tag == "OpponentSquareRight")
@@ -38,6 +39,10 @@ public class Ball : MonoBehaviour
             MatchManager.Instance.SetBouncePosition(MatchManager.CourtPosition.PlayerSquareRight);
         else if (collision.gameObject.tag == "PlayerHalf")
             MatchManager.Instance.SetBouncePosition(MatchManager.CourtPosition.PlayerHalf);
+        else if(collision.gameObject.tag == "Player" || collision.gameObject.tag == "Racket")
+        {
+
+        }
         else
             MatchManager.Instance.SetBouncePosition(MatchManager.CourtPosition.Out);
     }

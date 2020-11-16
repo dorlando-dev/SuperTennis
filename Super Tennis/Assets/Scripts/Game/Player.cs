@@ -6,11 +6,11 @@ public class Player : MonoBehaviour
 {
     public GameObject ball;
     public GameObject racket;
-    public float hitThreshold = 2f;
+    public float hitThreshold = 5f;
     private Rigidbody ballRb;
     BallHitter ballHitter;
     private float waitCounter = 0f;
-    private float waitTime = 330f;
+    private float waitTime = 0;
     private State state = State.Play;
 
     private enum State

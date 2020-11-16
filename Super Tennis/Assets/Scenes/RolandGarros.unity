@@ -1052,7 +1052,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 127964559}
   m_Material: {fileID: 13400000, guid: b6d2e8dc5a710154090dbfdc02ca3033, type: 2}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 13.942409, y: 0, z: 21.063875}
@@ -2222,9 +2222,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 100090, guid: 19fdf76f18fd0b849b501c18a87fbbdf, type: 3}
+      propertyPath: m_TagString
+      value: Racket
+      objectReference: {fileID: 0}
     - target: {fileID: 100094, guid: 19fdf76f18fd0b849b501c18a87fbbdf, type: 3}
       propertyPath: m_Name
       value: Player2
+      objectReference: {fileID: 0}
+    - target: {fileID: 100094, guid: 19fdf76f18fd0b849b501c18a87fbbdf, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 400094, guid: 19fdf76f18fd0b849b501c18a87fbbdf, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2320,7 +2328,7 @@ MonoBehaviour:
   rb: {fileID: 254393766}
   ball: {fileID: 1469426002}
   racket: {fileID: 1456705511}
-  hitThreshold: 2
+  hitThreshold: 5
 --- !u!136 &254393769
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2726,9 +2734,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 100090, guid: 19fdf76f18fd0b849b501c18a87fbbdf, type: 3}
+      propertyPath: m_TagString
+      value: Racket
+      objectReference: {fileID: 0}
     - target: {fileID: 100094, guid: 19fdf76f18fd0b849b501c18a87fbbdf, type: 3}
       propertyPath: m_Name
       value: Player1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100094, guid: 19fdf76f18fd0b849b501c18a87fbbdf, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 400094, guid: 19fdf76f18fd0b849b501c18a87fbbdf, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2841,7 +2857,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ball: {fileID: 1469426002}
   racket: {fileID: 1179051196}
-  hitThreshold: 4
+  hitThreshold: 5
   hit: {x: 40, y: 6, z: 0}
 --- !u!1 &279456541
 GameObject:
@@ -2882,7 +2898,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 279456541}
   m_Material: {fileID: 13400000, guid: b6d2e8dc5a710154090dbfdc02ca3033, type: 2}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 27.717665, y: 0, z: 17.739235}
@@ -6197,7 +6213,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 669542129}
   m_Material: {fileID: 13400000, guid: b6d2e8dc5a710154090dbfdc02ca3033, type: 2}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 13.60089, y: 0, z: 21.063875}
@@ -12004,8 +12020,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 78.66852, y: 0, z: 262.18805}
-  m_Center: {x: 57.490555, y: 0, z: -22.607107}
+  m_Size: {x: 82.842186, y: 0, z: 262.18805}
+  m_Center: {x: 55.403713, y: 0, z: -22.6071}
 --- !u!1 &1532962702
 GameObject:
   m_ObjectHideFlags: 0
@@ -12144,8 +12160,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 78.44963, y: 0, z: 262.18805}
-  m_Center: {x: -57.266384, y: 0, z: -22.607111}
+  m_Size: {x: 82.70316, y: 0, z: 262.18805}
+  m_Center: {x: -55.13961, y: 0, z: -22.607103}
 --- !u!1 &1543406692
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,17 +10,20 @@ public class AI : MonoBehaviour
     public Rigidbody rb;
     public GameObject ball;
     public GameObject racket;
-    public float hitThreshold = 2f;
+    public float hitThreshold = 5f;
     private Rigidbody ballRb;
     BallHitter ballHitter;
 
     private float waitTime = 0f;
     private float waitingToServeTime = 500f;
-    private float waitAnimationTime = 330f;
+    private float waitAnimationTime = 0f;
+    private int counter = 0;
 
     private State state = State.MoveToCenter;
     private Vector3 ballDestination;
     private State from;
+
+    private BallHitter.Side serveSide;
 
     public enum State
     {
@@ -61,9 +64,11 @@ public class AI : MonoBehaviour
                 break;
             case State.Serve:
                 Serve();
+                state = State.MoveToCenter;
                 break;
             case State.HitBall:
                 HitBall();
+                state = State.MoveToCenter;
                 break;
             case State.WaitAnimation:
                 if (waitTime < waitAnimationTime)
@@ -95,8 +100,7 @@ public class AI : MonoBehaviour
 
     void HitBall()
     {        
-        ball.gameObject.GetComponent<Ball>().Freeze(false);
-        MatchManager.Instance.SetLastHit(2, Vector3.zero);
+        ball.gameObject.GetComponent<Ball>().Freeze(false);        
         float dist = Vector3.Distance(ball.transform.position, transform.position);
         if (dist <= hitThreshold)
         {
@@ -114,7 +118,7 @@ public class AI : MonoBehaviour
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
-            Vector3 hit = ballHitter.serve(BallHitter.Side.Center, BallHitter.Side.Left, 1f, false);
+            Vector3 hit = ballHitter.serve(BallHitter.Side.Center, serveSide, 1f, false);
             ballRb.velocity = hit;
         }
     }
@@ -148,5 +152,17 @@ public class AI : MonoBehaviour
     private void Stop()
     {
         rb.velocity = Vector3.zero;
+    }
+
+    public void SetServeSide(int side)
+    {
+        if(side == 0)
+        {
+            serveSide = BallHitter.Side.Left;            
+        }
+        else
+        {
+            serveSide = BallHitter.Side.Right;
+        }
     }
 }

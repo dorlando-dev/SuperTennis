@@ -196,6 +196,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     {
         if (ballBounced)
         {
+            Debug.Log("A");
             if(ballBouncedTwice)
             {
                 if (lastHit == 1)
@@ -206,6 +207,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
             }
             else if (bouncePosition == CourtPosition.Out)
             {
+                Debug.Log("H");
                 if (lastHit == 1)
                     pointWinner = 2;
                 else
@@ -245,12 +247,15 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                 }
             }
         }
+        bouncePosition = CourtPosition.NotSet;
         return false;
     }
 
     public void SetLastHit(int player, Vector3 ballDestination)
     {
         lastHit = player;
+        ballBounced = false;
+        ballBouncedTwice = false;
         if(player == 1)
         {
             P2.GetComponent<AI>().SetState(AI.State.MovingToBall);
@@ -358,6 +363,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     {
         SetPlayerPosition(new Vector3(P1Positions[servePosition].position.x, P1Positions[servePosition].position.y, P1Positions[servePosition].position.z));
         P2.transform.position = new Vector3(P2Positions[servePosition].position.x, P2Positions[servePosition].position.y, P2Positions[servePosition].position.z);
+        P2.GetComponent<AI>().SetServeSide(servePosition);
         if (currentPlayer == 1)
             ball.transform.position = new Vector3(P1.transform.position.x, 3, P1.transform.position.z);
         else
@@ -442,7 +448,5 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
             ballBounced = true;
             bouncePosition = courtPosition;
         }
-
-        Debug.Log(courtPosition);
     }
 }
