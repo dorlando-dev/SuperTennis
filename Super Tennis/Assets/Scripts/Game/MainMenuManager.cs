@@ -27,6 +27,21 @@ public class MainMenuManager : MonoBehaviour
         gameManager.PlayTournament();
     }
 
+    public void SetEasy()
+    {
+        gameManager.SetEasy();
+    }
+
+    public void SetMedium()
+    {
+        gameManager.SetMedium();
+    }
+
+    public void SetHard()
+    {
+        gameManager.SetHard();
+    }
+
     public void PlayUSOpen()
     {
         gameManager.PlayUSOpen();

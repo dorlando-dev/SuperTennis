@@ -71,6 +71,7 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
     public void PlayTournament()
     {
         gameMode = GameMode.Tournament;
+        PlayRolandGarros();
     }
 
     public void PlayUSOpen()
@@ -83,6 +84,23 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
     {
         gameState = GameState.Game;
         SceneManager.LoadScene("RolandGarros");
+    }
+
+    public void SetEasy()
+    {
+        difficulty = 1;
+        PlayRolandGarros();
+    }
+
+    public void SetMedium()
+    {
+        difficulty = 2;
+        PlayRolandGarros();
+    }
+    public void SetHard()
+    {
+        difficulty = 3;
+        PlayRolandGarros();
     }
 
     public void ReturnToMenu()
