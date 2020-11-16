@@ -1055,8 +1055,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 13.942409, y: 16.83506, z: 21.063875}
-  m_Center: {x: 6.9760528, y: -7.34, z: -10.635419}
+  m_Size: {x: 13.942409, y: 0, z: 21.063875}
+  m_Center: {x: 6.9760528, y: 0, z: -10.635419}
 --- !u!1 &140304949
 GameObject:
   m_ObjectHideFlags: 0
@@ -1540,8 +1540,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 27.717665, y: 16.83506, z: 17.560188}
-  m_Center: {x: 0.08841185, y: -7.34, z: 30.250837}
+  m_Size: {x: 27.717665, y: 0, z: 17.560188}
+  m_Center: {x: 0.08841185, y: 0, z: 30.250837}
 --- !u!1 &167031529
 GameObject:
   m_ObjectHideFlags: 0
@@ -1925,8 +1925,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 13.60089, y: 16.83506, z: 21.203606}
-  m_Center: {x: -6.983034, y: -7.34, z: 10.680415}
+  m_Size: {x: 13.60089, y: 0, z: 21.203606}
+  m_Center: {x: -6.983034, y: 0, z: 10.680415}
 --- !u!1 &210254589
 GameObject:
   m_ObjectHideFlags: 0
@@ -2849,8 +2849,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 27.717665, y: 16.83506, z: 17.739235}
-  m_Center: {x: 0.08842984, y: -7.34, z: -30.09284}
+  m_Size: {x: 27.717665, y: 0, z: 17.739235}
+  m_Center: {x: 0.08842984, y: 0, z: -30.09284}
 --- !u!1 &287513546
 GameObject:
   m_ObjectHideFlags: 0
@@ -5840,8 +5840,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 13.942409, y: 16.83506, z: 21.27023}
-  m_Center: {x: 6.976047, y: -7.34, z: 10.643842}
+  m_Size: {x: 13.942409, y: 0, z: 21.27023}
+  m_Center: {x: 6.976047, y: 0, z: 10.643842}
 --- !u!1 &643188833
 GameObject:
   m_ObjectHideFlags: 0
@@ -6076,8 +6076,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 13.60089, y: 16.83506, z: 21.063875}
-  m_Center: {x: -6.983028, y: -7.34, z: -10.635424}
+  m_Size: {x: 13.60089, y: 0, z: 21.063875}
+  m_Center: {x: -6.983028, y: 0, z: -10.635424}
 --- !u!1 &675055393
 GameObject:
   m_ObjectHideFlags: 0

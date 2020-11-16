@@ -81,6 +81,7 @@ public class Player : MonoBehaviour
         {
             ball.transform.position = racket.transform.position;
             Vector3 hit = ballHitter.hitBall(side, depth, ball.transform.position, 1f);
+            Debug.Log("ball v: " + hit);
             ballRb.velocity = hit;
         }
     }
