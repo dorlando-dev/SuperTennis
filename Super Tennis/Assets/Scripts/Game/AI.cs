@@ -24,6 +24,7 @@ public class AI : MonoBehaviour
     private State from;
 
     private BallHitter.Side serveSide;
+    private float difficulty;
 
     public enum State
     {
@@ -105,7 +106,7 @@ public class AI : MonoBehaviour
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
-            Vector3 hit = ballHitter.hitBall(BallHitter.Side.Center, BallHitter.Strength.Middle, 1f, false);
+            Vector3 hit = ballHitter.hitBall(BallHitter.Side.Center, BallHitter.Strength.Middle, difficulty, false);
             ballRb.velocity = hit;
         }
     }
@@ -118,7 +119,7 @@ public class AI : MonoBehaviour
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
-            Vector3 hit = ballHitter.serve(BallHitter.Side.Center, serveSide, 1f, false);
+            Vector3 hit = ballHitter.serve(BallHitter.Side.Center, serveSide, difficulty, false);
             ballRb.velocity = hit;
         }
     }
@@ -164,5 +165,15 @@ public class AI : MonoBehaviour
         {
             serveSide = BallHitter.Side.Right;
         }
+    }
+
+    public void SetDifficulty(int newDifficulty)
+    {
+        if (newDifficulty == 1)
+            difficulty = 0.5f;
+        else if (newDifficulty == 2)
+            difficulty = 0.75f;
+        else if (newDifficulty == 3)
+            difficulty = 1f;
     }
 }

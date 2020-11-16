@@ -91,6 +91,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         textMatch.text = "1";
         gamesToWin = gameManager.GetGamesToWin();
         difficulty = gameManager.GetDifficulty();
+        P2.GetComponent<AI>().SetDifficulty(difficulty);
         ResetPoint();
     }
 
