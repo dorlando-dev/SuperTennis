@@ -154,7 +154,21 @@ public class AI : MonoBehaviour
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
-            Vector3 hit = ballHitter.serve(BallHitter.Side.Center, serveSide, difficulty, false)[1];
+
+            BallHitter.Side side;
+            float sideR = UnityEngine.Random.value;
+            if(sideR < 0.33)
+            {
+                side = BallHitter.Side.Left;
+            } else if (sideR < 0.66)
+            {
+                side = BallHitter.Side.Center;
+            } else
+            {
+                side = BallHitter.Side.Right;
+            }
+
+            Vector3 hit = ballHitter.serve(side, serveSide, difficulty, false)[1];
             ballRb.velocity = hit;
             MatchManager.Instance.SetLastHit(2, Vector3.zero);
         }
