@@ -32,14 +32,14 @@ public class BallHitter
     {
         Vector2 pPos = new Vector2(racket.position.x, racket.position.y);
 
-        float netTargetHeight = 1f;
+        float netTargetHeight = 2f;
         if(strength == Strength.Lob)
         {
-            netTargetHeight = 3f;
+            netTargetHeight = 5f;
         } 
         else if(strength == Strength.Drop)
         {
-            netTargetHeight = 0.5f;
+            netTargetHeight = 1f;
         }
 
         Vector2 tPos = getTargetPosition(side, strength, Side.Center, sideLength, sideWidth, isPlayer);
@@ -52,7 +52,7 @@ public class BallHitter
     {
         Vector2 pPos = new Vector2(racket.position.x, racket.position.y);
 
-        float netTargetHeight = 0.6f;
+        float netTargetHeight = 1.5f;
 
         Vector2 tPos = getTargetPosition(side, Strength.Lob, serve, serveLength, serveWidth, isPlayer);
 
