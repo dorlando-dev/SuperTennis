@@ -40,7 +40,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     private int servePosition = 0;
     private State state;
     private CourtPosition expectedServePosition;
-    private int currentPlayer = 2;
+    private int currentPlayer = 1;
     private bool ballBounced = false;
     private bool ballBouncedTwice = false;
     private CourtPosition bouncePosition;
@@ -333,6 +333,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     {
         SetServePosition();
         SetExpectedServePosition();
+        SetPlayerState();
         SetAIServeState();
         ChangeServePosition();
         bouncePosition = CourtPosition.NotSet;
@@ -341,6 +342,14 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         ball.gameObject.GetComponent<Ball>().Freeze(true);
         state = State.Serve;
         UpdateVisualScore();
+    }
+
+    private void SetPlayerState()
+    {
+        if(currentPlayer == 1)
+            P1.GetComponent<Player>().SetState(Player.State.Serve);
+        else
+            P1.GetComponent<Player>().SetState(Player.State.Play);
     }
 
     private void SetAIServeState()
@@ -363,6 +372,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     {
         SetPlayerPosition(new Vector3(P1Positions[servePosition].position.x, P1Positions[servePosition].position.y, P1Positions[servePosition].position.z));
         P2.transform.position = new Vector3(P2Positions[servePosition].position.x, P2Positions[servePosition].position.y, P2Positions[servePosition].position.z);
+        P1.GetComponent<Player>().SetServeSide(servePosition);
         P2.GetComponent<AI>().SetServeSide(servePosition);
         if (currentPlayer == 1)
             ball.transform.position = new Vector3(P1.transform.position.x, 3, P1.transform.position.z);

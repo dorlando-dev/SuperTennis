@@ -7,14 +7,18 @@ public class Player : MonoBehaviour
     public GameObject ball;
     public GameObject racket;
     public float hitThreshold = 5f;
+    public Animator animator;
     private Rigidbody ballRb;
     BallHitter ballHitter;
     private float waitCounter = 0f;
-    private float waitTime = 0;
+    private float waitTime = 350f;
     private State state = State.Play;
+    private State from;
+    private BallHitter.Side serveSide;
 
-    private enum State
+    public enum State
     {
+        Serve,
         Play,
         WaitAnimation
     }
@@ -31,11 +35,20 @@ public class Player : MonoBehaviour
     {
         switch (state)
         {
+            case State.Serve:
+                if (Input.GetKeyDown("space"))
+                {
+                    animator.SetTrigger("Serve");
+                    state = State.WaitAnimation;
+                    from = State.Serve;
+                }
+                break;
             case State.Play:
                 if (Input.GetKeyDown("space"))
                 {
-                    //Debug.Log("hitting ball");
-                    state = State.WaitAnimation;                    
+                    animator.SetTrigger("Drive");
+                    state = State.WaitAnimation;
+                    from = State.Play;
                 }
                 break;
 
@@ -44,7 +57,10 @@ public class Player : MonoBehaviour
                     waitCounter++;
                 else
                 {
-                    HitBall();
+                    if (from == State.Play)
+                        HitBall();
+                    else if (from == State.Serve)
+                        Serve();
                     state = State.Play;
                     waitCounter = 0;
                 }
@@ -84,5 +100,40 @@ public class Player : MonoBehaviour
             ballRb.velocity = hit;
             MatchManager.Instance.SetLastHit(1, new Vector3(0, 0, 0));
         }
+    }
+
+    void Serve()
+    {
+        BallHitter.Side side = BallHitter.Side.Center;
+        if (Input.GetKey("left"))
+        {
+            side = BallHitter.Side.Left;
+        }
+        else if (Input.GetKey("right"))
+        {
+            side = BallHitter.Side.Right;
+        }
+        ball.gameObject.GetComponent<Ball>().Freeze(false);
+        MatchManager.Instance.SetLastHit(1, Vector3.zero);
+        float dist = Vector3.Distance(ball.transform.position, transform.position);
+        if (dist <= hitThreshold)
+        {
+            ball.transform.position = racket.transform.position;
+            Vector3 hit = ballHitter.serve(side, serveSide, 1f, true);
+            ballRb.velocity = hit;
+        }
+    }
+
+    public void SetServeSide(int side)
+    {
+        if (side == 0)
+            serveSide = BallHitter.Side.Left;
+        else
+            serveSide = BallHitter.Side.Right;
+    }
+
+    public void SetState(State newState)
+    {
+        state = newState;
     }
 }
