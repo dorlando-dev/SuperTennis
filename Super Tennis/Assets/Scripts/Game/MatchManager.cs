@@ -196,7 +196,15 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     {
         if (ballBounced)
         {
-            if (bouncePosition == CourtPosition.Out)
+            if(ballBouncedTwice)
+            {
+                if (lastHit == 1)
+                    pointWinner = 1;
+                else
+                    pointWinner = 2;
+                return true;
+            }
+            else if (bouncePosition == CourtPosition.Out)
             {
                 if (lastHit == 1)
                     pointWinner = 2;
@@ -420,12 +428,21 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     }
 
     public void SetBouncePosition(CourtPosition courtPosition)
-    {
-        bouncePosition = courtPosition;        
+    {        
         if (ballBounced)
-            ballBouncedTwice = true;
+        {
+            if (!ballBouncedTwice)
+            {
+                ballBouncedTwice = true;
+                bouncePosition = courtPosition;
+            }
+        }
         else
+        {
             ballBounced = true;
-        Debug.Log(ballBouncedTwice);
+            bouncePosition = courtPosition;
+        }
+
+        Debug.Log(courtPosition);
     }
 }

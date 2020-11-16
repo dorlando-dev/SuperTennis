@@ -22,10 +22,10 @@ public class Ball : MonoBehaviour
             rigidbody.velocity = new Vector3(0, 0, 0);
         }
 
-    }
+    } 
 
     private void OnCollisionEnter(Collision collision)
-    {
+    {       
         if (collision.gameObject.tag == "OpponentSquareLeft")
             MatchManager.Instance.SetBouncePosition(MatchManager.CourtPosition.OpponentSquareLeft);
         else if (collision.gameObject.tag == "OpponentSquareRight")
