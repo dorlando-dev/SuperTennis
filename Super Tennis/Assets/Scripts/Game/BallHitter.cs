@@ -28,7 +28,7 @@ public class BallHitter
         this.racket = racket;
     }
 
-    public Vector3 hitBall(Side side, Strength strength, float accuracy, bool isPlayer)
+    public List<Vector3> hitBall(Side side, Strength strength, float accuracy, bool isPlayer)
     {
         Vector2 pPos = new Vector2(racket.position.x, racket.position.y);
 
@@ -45,10 +45,14 @@ public class BallHitter
         Vector2 tPos = getTargetPosition(side, strength, Side.Center, sideLength, sideWidth, isPlayer);
 
         Vector3 vel = hitTowardsPoint(tPos, netTargetHeight);
-        return applyError(vel, accuracy);
+
+        List<Vector3> ret = new List<Vector3>();
+        ret.Add(new Vector3(tPos.x, 0f, tPos.y));
+        ret.Add(applyError(vel, accuracy));
+        return ret;
     }
 
-    public Vector3 serve(Side side, Side serve, float accuracy, bool isPlayer)
+    public List<Vector3> serve(Side side, Side serve, float accuracy, bool isPlayer)
     {
         Vector2 pPos = new Vector2(racket.position.x, racket.position.y);
 
@@ -57,7 +61,11 @@ public class BallHitter
         Vector2 tPos = getTargetPosition(side, Strength.Lob, serve, serveLength, serveWidth, isPlayer);
 
         Vector3 vel = hitTowardsPoint(tPos, netTargetHeight);
-        return applyError(vel, accuracy);
+
+        List<Vector3> ret = new List<Vector3>();
+        ret.Add(new Vector3(tPos.x, 0f, tPos.y));
+        ret.Add(applyError(vel, accuracy));
+        return ret;
     }
 
     public Vector2 getTargetPosition(Side side, Strength strength, Side serve, float depth, float width, bool isPlayer)
@@ -86,12 +94,11 @@ public class BallHitter
         float tZ;
         if (serve == Side.Center)
         {
-            // Not serving.
             tZ = width*(0.5f - targetSideR);
         }
         else if (serve == Side.Left)
         {
-            tZ = width * targetSideR;
+            tZ = width * (1f - targetSideR);
         }
         else
         {
@@ -103,7 +110,6 @@ public class BallHitter
             tX = -tX;
             tZ = -tZ;
         }
-
 
         return new Vector2(tX, tZ);
     }

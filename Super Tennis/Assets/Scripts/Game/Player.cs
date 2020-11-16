@@ -115,22 +115,22 @@ public class Player : MonoBehaviour
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
-            Vector3 hit = ballHitter.hitBall(hitSide, hitStrength, 0.8f, true);
-            ballRb.velocity = hit;
-            MatchManager.Instance.SetLastHit(1, Vector3.zero);
+            List<Vector3> ret = ballHitter.hitBall(hitSide, hitStrength, 0.8f, true);
+            ballRb.velocity = ret[1];
+            MatchManager.Instance.SetLastHit(1, ret[0]);
         }
     }
 
     void Serve()
     {
-        ball.gameObject.GetComponent<Ball>().Freeze(false);        
+        ball.gameObject.GetComponent<Ball>().Freeze(false);
         float dist = Vector3.Distance(ball.transform.position, transform.position);
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
-            Vector3 hit = ballHitter.serve(hitSide, serveSide, 1f, true);
-            ballRb.velocity = hit;
-            MatchManager.Instance.SetLastHit(1, Vector3.zero);
+            List<Vector3> ret = ballHitter.serve(hitSide, serveSide, 1f, true);
+            ballRb.velocity = ret[1];
+            MatchManager.Instance.SetLastHit(1, ret[0]);
         }
     }
 

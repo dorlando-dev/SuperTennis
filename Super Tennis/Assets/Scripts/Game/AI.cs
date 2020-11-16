@@ -114,7 +114,7 @@ public class AI : MonoBehaviour
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
-            Vector3 hit = ballHitter.hitBall(BallHitter.Side.Center, BallHitter.Strength.Middle, difficulty, false);
+            Vector3 hit = ballHitter.hitBall(BallHitter.Side.Center, BallHitter.Strength.Middle, difficulty, false)[1];
             ballRb.velocity = hit;
             MatchManager.Instance.SetLastHit(2, Vector3.zero);
         }
@@ -127,7 +127,7 @@ public class AI : MonoBehaviour
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
-            Vector3 hit = ballHitter.serve(BallHitter.Side.Center, serveSide, difficulty, false);
+            Vector3 hit = ballHitter.serve(BallHitter.Side.Center, serveSide, difficulty, false)[1];
             ballRb.velocity = hit;
             MatchManager.Instance.SetLastHit(2, Vector3.zero);
         }
