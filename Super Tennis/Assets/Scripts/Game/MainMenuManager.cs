@@ -51,4 +51,9 @@ public class MainMenuManager : MonoBehaviour
     {
         gameManager.PlayRolandGarros();
     }
+
+    public void QuitGame()
+    {
+        gameManager.QuitGame();
+    }
 }

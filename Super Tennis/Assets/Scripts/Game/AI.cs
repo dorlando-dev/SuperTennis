@@ -17,8 +17,8 @@ public class AI : MonoBehaviour
     public Transform center;
 
     private float waitTime = 0f;
-    private float waitingToServeTime = 500f;
-    private float waitAnimationTime = 300f;
+    private float waitingToServeTime = 3f;
+    private float waitAnimationTime = 1f;
     private int counter = 0;
 
     private State state = State.MoveToCenter;
@@ -54,14 +54,14 @@ public class AI : MonoBehaviour
         switch (state)
         {
             case State.WaitingToServe:
+                Stop();
                 if (waitTime < waitingToServeTime)
-                    waitTime++;
+                    waitTime += Time.deltaTime;
                 else
                 {
                     state = State.WaitAnimation;
                     from = State.Serve;
-                    waitTime = 0;
-                    Stop();
+                    waitTime = 0;                    
                     Animator.SetTrigger("Serve");
                 }
                 break;
@@ -81,7 +81,7 @@ public class AI : MonoBehaviour
                     else
                     {
                         state = State.Serve;
-                        waitTime = 0;
+                        waitTime += Time.deltaTime;
                         Stop();
                     }
                 }

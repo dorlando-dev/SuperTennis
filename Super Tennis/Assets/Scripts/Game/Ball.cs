@@ -27,7 +27,7 @@ public class Ball : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(collision.gameObject.tag);
+        //Debug.Log(collision.gameObject.tag);
         if (collision.gameObject.tag == "OpponentSquareLeft")
             MatchManager.Instance.SetBouncePosition(MatchManager.CourtPosition.OpponentSquareLeft);
         else if (collision.gameObject.tag == "OpponentSquareRight")

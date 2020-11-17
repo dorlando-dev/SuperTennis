@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
     private Rigidbody ballRb;
     BallHitter ballHitter;
     private float waitCounter = 0f;
-    private float waitTime = 300f;
+    private float waitTime = 1f;
     private State state = State.Play;
     private State from;
     private BallHitter.Side serveSide;
@@ -59,7 +59,7 @@ public class Player : MonoBehaviour
 
             case State.WaitAnimation:
                 if (waitCounter < waitTime)
-                    waitCounter++;
+                    waitCounter += Time.deltaTime;
                 else
                 {
                     if (from == State.Play)

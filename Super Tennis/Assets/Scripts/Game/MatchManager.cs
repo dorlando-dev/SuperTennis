@@ -49,7 +49,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     private int lastHit = 0;
 
     private float waitCounter = 0f;
-    private float waitTime = 500f;
+    private float waitTime = 3f;
 
     private enum State
     {
@@ -90,6 +90,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
             textGameMode.text = "Exhibition";
         }
         matches = matchesRemaining;
+        matchesRemaining--;
         textMatch.text = "1";
         gamesToWin = gameManager.GetGamesToWin();
         difficulty = gameManager.GetDifficulty();
@@ -115,6 +116,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                         {
                             state = State.WaitPointOver;
                             pointWinner = currentPlayer == 1 ? 2 : 1;
+                            TriggerSound();
                             P2.GetComponent<AI>().SetState(AI.State.Stop);
                         }                            
                     }
@@ -123,15 +125,15 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
             case State.Game:
                 if (IsPointOver())
                 {
+                    TriggerSound();
                     state = State.WaitPointOver;
                     P2.GetComponent<AI>().SetState(AI.State.Stop);
                 }
                 break;
             case State.WaitPointOver:
-                TriggerSound();
                 DisplayPointResult("POINT " + (pointWinner == 1 ? "P1" : "P2"));
                 if (waitCounter < waitTime)
-                    waitCounter++;
+                    waitCounter += Time.deltaTime;
                 else
                 {
                     goPointWinner.SetActive(false);
@@ -160,7 +162,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
             case State.WaitGameOver:
                 DisplayPointResult("Game " + (gameWinner == 1 ? "P1" : "P2"));
                 if (waitCounter < waitTime)
-                    waitCounter++;
+                    waitCounter += Time.deltaTime;
                 else
                 {
                     goPointWinner.SetActive(false);
@@ -172,12 +174,12 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
             case State.WaitMatchOver:
                 DisplayPointResult((matchWinner == 1 ? "P1" : "P2") + " wins");
                 if (waitCounter < waitTime)
-                    waitCounter++;
+                    waitCounter += Time.deltaTime;
                 else
                 {
                     goPointWinner.SetActive(false);
                     waitCounter = 0;
-                    if (matchesRemaining > 0 && matchWinner == 1)
+                    if (matchesRemaining >= 0 && matchWinner == 1)
                     {
                         ResetMatch();
                     }
@@ -266,7 +268,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         lastHit = player;
         ballBounced = false;
         ballBouncedTwice = false;
-        if(player == 1)
+        if(player == 1 && (state == State.Serve || state == State.Game))
         {
             P2.GetComponent<AI>().SetState(AI.State.MovingToBall);
             P2.GetComponent<AI>().SetBallDestination(ballDestination);
@@ -423,7 +425,9 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         {
             matchWinner = 1;
             matchesRemaining--;
-            textMatch.text = $"{matches-matchesRemaining}";
+            textMatch.text = $"{matches - matchesRemaining}";
+            //Debug.Log(matches);
+            //Debug.Log(matchesRemaining);
             return true;
         }
         if (gamesP2 >= gamesToWin)
