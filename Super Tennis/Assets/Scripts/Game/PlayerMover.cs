@@ -8,45 +8,28 @@ public class PlayerMover : MonoBehaviour
     public CharacterController CharacterController;
     public Animator Animator;
 
+    PlayerControls controls;
+
     private int xMovement;
     private int zMovement;
+
+    private Vector2 movement;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        controls = new PlayerControls();
+        controls.Gameplay.Move.performed += ctx => MoveTo(ctx.ReadValue<Vector2>());
+        controls.Gameplay.Enable();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void MoveTo(Vector2 direction)
     {
-        ReadInput();
-        UpdatePosition();
-    }
+        Debug.Log(direction);
+        float x = Time.deltaTime * speed * direction.y;
+        float z = Time.deltaTime * speed * direction.x;
 
-    private void ReadInput()
-    {
-        if (ActionMapper.GetMoveLeft())
-            zMovement = 1;
-        else if (ActionMapper.GetMoveRight())
-            zMovement = -1;
-        else
-            zMovement = 0;
-
-        if (ActionMapper.GetMoveDown())
-            xMovement = -1;
-        else if (ActionMapper.GetMoveUp())
-            xMovement = 1;
-        else
-            xMovement = 0;
-    }
-
-    private void UpdatePosition()
-    {
-        float x = Time.deltaTime * speed * xMovement;
-        float y = -3.067f;
-        float z = Time.deltaTime * speed * zMovement;
-        Vector3 newPosition = new Vector3(x, y, z);
+        Vector3 newPosition = new Vector3(x, -3.067f, z);
         CharacterController.Move(newPosition);
     }
 }

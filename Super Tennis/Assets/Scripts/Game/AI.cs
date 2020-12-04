@@ -61,7 +61,7 @@ public class AI : MonoBehaviour
                 {
                     state = State.WaitAnimation;
                     from = State.Serve;
-                    waitTime = 0;                    
+                    waitTime = 0;
                     Animator.SetTrigger("Serve");
                 }
                 break;
@@ -110,43 +110,18 @@ public class AI : MonoBehaviour
     }
 
     void HitBall()
-    {        
-        ball.gameObject.GetComponent<Ball>().Freeze(false);        
+    {
+        ball.gameObject.GetComponent<Ball>().Freeze(false);
         float dist = Vector3.Distance(ball.transform.position, transform.position);
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
-            BallHitter.Side side;
-            float sideR = UnityEngine.Random.value;
-            if(sideR < 0.33)
-            {
-                side = BallHitter.Side.Left;
-            } else if (sideR < 0.66)
-            {
-                side = BallHitter.Side.Center;
-            } else
-            {
-                side = BallHitter.Side.Right;
-            }
 
-            BallHitter.Strength depth;
-            float depthR = UnityEngine.Random.value;
-            if(depthR < 0.15)
-            {
-                depth = BallHitter.Strength.Drop;
-                Animator.SetTrigger("Strafe");
-            } else if (depthR < 0.8)
-            {
-                depth = BallHitter.Strength.Middle;
-                Animator.SetTrigger("Drive");
-            } else
-            {
-                depth = BallHitter.Strength.Lob;
-                Animator.SetTrigger("PowerfullShot");
-            }
+            Vector2 target = new Vector2((UnityEngine.Random.value * 2) - 1, (UnityEngine.Random.value * 2) - 1);
 
+            Animator.SetTrigger("Drive");
 
-            Vector3 hit = ballHitter.hitBall(side, depth, difficulty, false)[1];
+            Vector3 hit = ballHitter.hitBall(target, difficulty, false)[1];
             ballRb.velocity = hit;
             MatchManager.Instance.SetLastHit(2, Vector3.zero);
             audioClipHitBall.Play();
@@ -155,26 +130,17 @@ public class AI : MonoBehaviour
 
     void Serve()
     {
-        ball.gameObject.GetComponent<Ball>().Freeze(false);        
+        ball.gameObject.GetComponent<Ball>().Freeze(false);
         float dist = Vector3.Distance(ball.transform.position, transform.position);
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
 
-            BallHitter.Side side;
-            float sideR = UnityEngine.Random.value;
-            if(sideR < 0.33)
-            {
-                side = BallHitter.Side.Left;
-            } else if (sideR < 0.66)
-            {
-                side = BallHitter.Side.Center;
-            } else
-            {
-                side = BallHitter.Side.Right;
-            }
+            Vector2 target = new Vector2((UnityEngine.Random.value * 2) - 1, (UnityEngine.Random.value * 2) - 1);
 
-            Vector3 hit = ballHitter.serve(side, serveSide, difficulty, false)[1];
+            Animator.SetTrigger("Serve");
+
+            Vector3 hit = ballHitter.serve(target, serveSide, difficulty, false)[1];
             ballRb.velocity = hit;
             MatchManager.Instance.SetLastHit(2, Vector3.zero);
             audioClipHitBall.Play();
@@ -210,7 +176,7 @@ public class AI : MonoBehaviour
     {
         if(side == 0)
         {
-            serveSide = BallHitter.Side.Left;            
+            serveSide = BallHitter.Side.Left;
         }
         else
         {

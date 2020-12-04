@@ -28,21 +28,13 @@ public class BallHitter
         this.racket = racket;
     }
 
-    public List<Vector3> hitBall(Side side, Strength strength, float accuracy, bool isPlayer)
+    public List<Vector3> hitBall(Vector2 aim, float accuracy, bool isPlayer)
     {
         Vector2 pPos = new Vector2(racket.position.x, racket.position.y);
 
         float netTargetHeight = 2f;
-        if(strength == Strength.Lob)
-        {
-            netTargetHeight = 5f;
-        } 
-        else if(strength == Strength.Drop)
-        {
-            netTargetHeight = 1f;
-        }
 
-        Vector2 tPos = getTargetPosition(side, strength, Side.Center, sideLength, sideWidth, isPlayer);
+        Vector2 tPos = getTargetPosition(aim, sideLength, sideWidth, isPlayer);
 
         Vector3 vel = hitTowardsPoint(tPos, netTargetHeight);
 
@@ -52,13 +44,13 @@ public class BallHitter
         return ret;
     }
 
-    public List<Vector3> serve(Side side, Side serve, float accuracy, bool isPlayer)
+    public List<Vector3> serve(Vector2 aim, Side serve, float accuracy, bool isPlayer)
     {
         Vector2 pPos = new Vector2(racket.position.x, racket.position.y);
 
         float netTargetHeight = 1.5f;
 
-        Vector2 tPos = getTargetPosition(side, Strength.Lob, serve, serveLength, serveWidth, isPlayer);
+        Vector2 tPos = getServeTargetPosition(aim, serve, serveLength, serveWidth, isPlayer);
 
         Vector3 vel = hitTowardsPoint(tPos, netTargetHeight);
 
@@ -68,41 +60,37 @@ public class BallHitter
         return ret;
     }
 
-    public Vector2 getTargetPosition(Side side, Strength strength, Side serve, float depth, float width, bool isPlayer)
+    public Vector2 getTargetPosition(Vector2 aim, float depth, float width, bool isPlayer)
     {
-        float targetDepthR = 0.6f;
-        if(strength == Strength.Lob)
+        float tDepth = (aim.x + 1) / 2;
+        float tSide = (aim.y + 1) / 2;
+
+        float tX = tDepth * depth;
+        float tZ = - width * tSide;
+
+        if (!isPlayer)
         {
-            targetDepthR = 0.85f;
-        } 
-        else if(strength == Strength.Drop)
-        {
-            targetDepthR = 0.2f;
+            tX = -tX;
+            tZ = -tZ;
         }
 
-        float targetSideR = 0.5f;
-        if(side == Side.Right)
-        {
-            targetSideR = 0.9f;
-        }
-        else if(side == Side.Left)
-        {
-            targetSideR = 0.1f;
-        }
+        return new Vector2(tX, tZ);
+    }
 
-        float tX = depth * targetDepthR;
-        float tZ;
-        if (serve == Side.Center)
+    public Vector2 getServeTargetPosition(Vector2 aim, Side serve, float depth, float width, bool isPlayer)
+    {
+        float tDepth = (aim.x + 1) / 2;
+        float tSide = (aim.y + 1) / 2;
+
+        float tX = tDepth * depth;
+        float tZ = 0;
+        if (serve == Side.Left)
         {
-            tZ = width*(0.5f - targetSideR);
-        }
-        else if (serve == Side.Left)
-        {
-            tZ = width * (1f - targetSideR);
+            tZ = width * (1f - tSide);
         }
         else
         {
-            tZ = - width * targetSideR;
+            tZ = - width * tSide;
         }
 
         if (!isPlayer)
@@ -115,7 +103,7 @@ public class BallHitter
     }
 
     public Vector3 applyError(Vector3 v, float accuracy)
-    {   
+    {
         float dX = (UnityEngine.Random.value - 0.5f)*(1 - accuracy);
         float vx = v.x*(1f + dX);
         float dY = (UnityEngine.Random.value - 0.5f)*(1 - accuracy);

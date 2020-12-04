@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
@@ -20,6 +21,8 @@ public class Player : MonoBehaviour
     private float accuracy = 0.8f;
     public AudioSource audioClipHitBall;
 
+    PlayerControls controls;
+
     public enum State
     {
         Serve,
@@ -33,106 +36,42 @@ public class Player : MonoBehaviour
     {
         ballRb = ball.GetComponent<Rigidbody>();
         ballHitter = new BallHitter(racket.transform);
+        controls = new PlayerControls();
+        controls.Gameplay.Shoot.performed += ctx => NormalServe(ctx.ReadValue<Vector2>());
     }
 
-    void Update()
-    {
-        switch (state)
-        {
-            case State.Serve:
-                if (Input.GetKeyDown("space"))
-                {
-                    animator.SetTrigger("Serve");
-                    state = State.WaitAnimation;
-                    from = State.Serve;
-                    GetShotType();
-                }
-                break;
-            case State.Play:
-                if (Input.GetKeyDown("space"))
-                {
-                    from = State.Play;
-                    GetShotType();
-                    HitBall();
-                }
-                break;
-
-            case State.WaitAnimation:
-                if (waitCounter < waitTime)
-                    waitCounter += Time.deltaTime;
-                else
-                {
-                    if (from == State.Play)
-                        HitBall();
-                    else if (from == State.Serve)
-                        Serve();
-                    state = State.Play;
-                    waitCounter = 0;
-                }
-                break;
-        }
-        
-    }
-
-    private void GetShotType()
-    {
-        hitSide = BallHitter.Side.Center;
-        if (Input.GetKey("left"))
-        {
-            hitSide = BallHitter.Side.Left;
-        }
-        else if (Input.GetKey("right"))
-        {
-            hitSide = BallHitter.Side.Right;
-        }
-
-        hitStrength = BallHitter.Strength.Middle;
-        if (Input.GetKey("up"))
-        {
-            hitStrength = BallHitter.Strength.Lob;
-        }
-        else if (Input.GetKey("down"))
-        {
-            hitStrength = BallHitter.Strength.Drop;
-        }
-        if(from == State.Play)
-        {
-            if (hitStrength == BallHitter.Strength.Drop)
-                animator.SetTrigger("Strafe");
-            else if (hitStrength == BallHitter.Strength.Lob)
-                animator.SetTrigger("PowerfullShot");
-            else
-                animator.SetTrigger("Drive");
-        }
-    }
-
-    void HitBall()
-    {
-        if(MatchManager.Instance.GetCurrentPlayer() == 1)
-            ball.gameObject.GetComponent<Ball>().Freeze(false);
-                
-        float dist = Vector3.Distance(ball.transform.position, transform.position);
-        if (dist <= hitThreshold)
-        {
-            ball.transform.position = racket.transform.position;
-            List<Vector3> ret = ballHitter.hitBall(hitSide, hitStrength, accuracy, true);
-            ballRb.velocity = ret[1];
-            MatchManager.Instance.SetLastHit(1, ret[0]);
-            audioClipHitBall.Play();
-        }
-    }
-
-    void Serve()
+    private void NormalServe(Vector2 direction)
     {
         ball.gameObject.GetComponent<Ball>().Freeze(false);
         float dist = Vector3.Distance(ball.transform.position, transform.position);
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
-            List<Vector3> ret = ballHitter.serve(hitSide, serveSide, accuracy, true);
+            List<Vector3> ret = ballHitter.serve(direction, serveSide, accuracy, true);
             ballRb.velocity = ret[1];
             MatchManager.Instance.SetLastHit(1, ret[0]);
             audioClipHitBall.Play();
+
+            controls.Gameplay.Shoot.performed += ctx => NormalShot(ctx.ReadValue<Vector2>());
+            animator.SetTrigger("Serve");
+        }
+    }
+
+    private void NormalShot(Vector2 direction)
+    {
+        if(MatchManager.Instance.GetCurrentPlayer() == 1)
+            ball.gameObject.GetComponent<Ball>().Freeze(false);
+
+        float dist = Vector3.Distance(ball.transform.position, transform.position);
+        if (dist <= hitThreshold)
+        {
+            ball.transform.position = racket.transform.position;
+            List<Vector3> ret = ballHitter.hitBall(direction, accuracy, true);
+            ballRb.velocity = ret[1];
+            MatchManager.Instance.SetLastHit(1, ret[0]);
+            audioClipHitBall.Play();
+
+            animator.SetTrigger("Drive");
         }
     }
 
@@ -146,6 +85,10 @@ public class Player : MonoBehaviour
 
     public void SetState(State newState)
     {
+        if(newState == State.Serve)
+        {
+            controls.Gameplay.Shoot.performed += ctx => NormalServe(ctx.ReadValue<Vector2>());
+        }
         state = newState;
     }
 }

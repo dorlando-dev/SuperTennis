@@ -18,21 +18,32 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
     public int difficulty = 1;
     public int gamesToWin = 2;
 
+    PlayerControls controls;
+
     // Start is called before the first frame update
     void Start()
     {
         SceneManager.LoadScene("MainMenu");
         DontDestroyOnLoad(this);
+        controls = new PlayerControls();
+        controls.Gameplay.Enable();
+        controls.UI.Menu.performed += ctx => ToggleMenu();
+        controls.Gameplay.Menu.performed += ctx => ToggleMenu();
     }
 
-    private void Update()
+    private void ToggleMenu()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (gameState == GameState.Paused)
         {
-            if (gameState == GameState.Paused)
-                Resume();
-            else if(gameState == GameState.Game)
-                Pause();
+            Resume();
+            controls.UI.Disable();
+            controls.Gameplay.Enable();
+        }
+        else if(gameState == GameState.Game)
+        {
+            Pause();
+            controls.UI.Enable();
+            controls.Gameplay.Disable();
         }
     }
 
