@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
     public int exhibitionMatches = 1;
     public int difficulty = 1;
     public int gamesToWin = 2;
+    public bool multiplayer = false;
 
     PlayerControls controls;
 
@@ -114,6 +115,17 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
         PlayRolandGarros();
     }
 
+    public void SetSinglePLayer()
+    {
+        multiplayer = false;
+    }
+
+    public void SetMultiPLayer()
+    {
+        multiplayer = true;
+        PlayRolandGarros();
+    }
+
     public void ReturnToMenu()
     {
         pauseMenu.SetActive(false);
@@ -150,5 +162,10 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
     public int GetGamesToWin()
     {
         return gamesToWin;
+    }
+
+    public bool GetMultiplayer()
+    {
+        return multiplayer;
     }
 }

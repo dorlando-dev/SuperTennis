@@ -52,6 +52,16 @@ public class MainMenuManager : MonoBehaviour
         gameManager.PlayRolandGarros();
     }
 
+    public void SetSinglePLayer()
+    {
+        gameManager.SetSinglePLayer();
+    }
+
+    public void SetMultiPLayer()
+    {
+        gameManager.SetMultiPLayer();
+    }
+
     public void QuitGame()
     {
         gameManager.QuitGame();

@@ -13,8 +13,8 @@ public class Player : MonoBehaviour
     BallHitter ballHitter;
     private float waitCounter = 0f;
     private float waitTime = 1f;
-    private State state = State.Play;
-    private State from;
+    private MatchManager.PlayerState state = MatchManager.PlayerState.Play;
+    private MatchManager.PlayerState from;
     private BallHitter.Side serveSide;
     private BallHitter.Side hitSide;
     private BallHitter.Strength hitStrength;
@@ -22,13 +22,6 @@ public class Player : MonoBehaviour
     public AudioSource audioClipHitBall;
 
     PlayerControls controls;
-
-    public enum State
-    {
-        Serve,
-        Play,
-        WaitAnimation
-    }
 
     public Vector3 hit;
 
@@ -83,11 +76,11 @@ public class Player : MonoBehaviour
             serveSide = BallHitter.Side.Right;
     }
 
-    public void SetState(State newState)
+    public void SetState(MatchManager.PlayerState newState)
     {
-        if(newState == State.Serve)
+        if(newState == MatchManager.PlayerState.Serve)
         {
-            controls.Gameplay.Shoot.performed += ctx => NormalServe(ctx.ReadValue<Vector2>());
+            //controls.Gameplay.Shoot.performed += ctx => NormalServe(ctx.ReadValue<Vector2>());
         }
         state = newState;
     }

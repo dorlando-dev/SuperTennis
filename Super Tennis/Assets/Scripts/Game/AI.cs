@@ -21,25 +21,12 @@ public class AI : MonoBehaviour
     private float waitAnimationTime = 1f;
     private int counter = 0;
 
-    private State state = State.MoveToCenter;
+    private MatchManager.AIState state = MatchManager.AIState.MoveToCenter;
     private Vector3 ballDestination;
-    private State from;
+    private MatchManager.AIState from;
 
     private BallHitter.Side serveSide;
     private float difficulty;
-
-    public enum State
-    {
-        WaitingToServe,
-        Serve,
-        HitBall,
-        WaitingForPlayerServe,
-        MoveToCenter,
-        MovingToBall,
-        WaitAnimation,
-        Stop
-
-    }
 
     // Start is called before the first frame update
     void Start()
@@ -53,57 +40,57 @@ public class AI : MonoBehaviour
     {
         switch (state)
         {
-            case State.WaitingToServe:
+            case MatchManager.AIState.WaitingToServe:
                 Stop();
                 if (waitTime < waitingToServeTime)
                     waitTime += Time.deltaTime;
                 else
                 {
-                    state = State.WaitAnimation;
-                    from = State.Serve;
+                    state = MatchManager.AIState.WaitAnimation;
+                    from = MatchManager.AIState.Serve;
                     waitTime = 0;
                     Animator.SetTrigger("Serve");
                 }
                 break;
-            case State.Serve:
+            case MatchManager.AIState.Serve:
                 Serve();
-                state = State.MoveToCenter;
+                state = MatchManager.AIState.MoveToCenter;
                 break;
-            case State.HitBall:
+            case MatchManager.AIState.HitBall:
                 HitBall();
-                state = State.MoveToCenter;
+                state = MatchManager.AIState.MoveToCenter;
                 break;
-            case State.WaitAnimation:
-                if (from == State.Serve)
+            case MatchManager.AIState.WaitAnimation:
+                if (from == MatchManager.AIState.Serve)
                 {
                     if (waitTime < waitAnimationTime)
                         waitTime++;
                     else
                     {
-                        state = State.Serve;
+                        state = MatchManager.AIState.Serve;
                         waitTime += Time.deltaTime;
                         Stop();
                     }
                 }
                 else
                 {
-                    state = State.HitBall;
+                    state = MatchManager.AIState.HitBall;
                     Stop();
                 }
                 break;
-            case State.MoveToCenter:
+            case MatchManager.AIState.MoveToCenter:
                 MoveToCenter();
                 break;
-            case State.MovingToBall:
+            case MatchManager.AIState.MovingToBall:
                 MoveToBall();
                 float dist = Vector3.Distance(ball.transform.position, transform.position);
                 if (dist <= hitThreshold)
                 {
-                    state = State.WaitAnimation;
-                    from = State.HitBall;
+                    state = MatchManager.AIState.WaitAnimation;
+                    from = MatchManager.AIState.HitBall;
                 }
                 break;
-            case State.Stop:
+            case MatchManager.AIState.Stop:
                 Stop();
                 break;
         }
@@ -147,7 +134,7 @@ public class AI : MonoBehaviour
         }
     }
 
-    public void SetState(State newState)
+    public void SetState(MatchManager.AIState newState)
     {
         state = newState;
     }
