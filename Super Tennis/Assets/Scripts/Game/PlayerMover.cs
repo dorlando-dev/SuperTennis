@@ -19,13 +19,17 @@ public class PlayerMover : MonoBehaviour
     void Start()
     {
         controls = new PlayerControls();
-        controls.Gameplay.Move.performed += ctx => MoveTo(ctx.ReadValue<Vector2>());
         controls.Gameplay.Enable();
     }
 
-    private void MoveTo(Vector2 direction)
+
+    void Update()
     {
-        Debug.Log(direction);
+        HandleMovement(controls.Gameplay.Move.ReadValue<Vector2>());
+    }
+
+    private void HandleMovement(Vector2 direction)
+    {
         float x = Time.deltaTime * speed * direction.y;
         float z = Time.deltaTime * speed * direction.x;
 
