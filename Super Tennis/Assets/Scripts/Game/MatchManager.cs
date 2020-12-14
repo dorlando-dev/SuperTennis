@@ -147,9 +147,11 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                         if (bouncePosition == expectedServePosition)
                         {
                             state = State.Game;
+                            Debug.Log("A");
                         }
                         else
                         {
+                            Debug.Log("B");
                             state = State.WaitPointOver;
                             pointWinner = currentPlayer == 1 ? 2 : 1;
                             TriggerSound();
@@ -415,9 +417,9 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     private void SetPlayer2State()
     {
         if (currentPlayer == 1)
-            P2.GetComponent<KeyboardPlayer>().SetState(PlayerState.Play);
+            P2.GetComponent<GamepadPlayer>().SetState(PlayerState.Play);
         else
-            P2.GetComponent<KeyboardPlayer>().SetState(PlayerState.Serve);
+            P2.GetComponent<GamepadPlayer>().SetState(PlayerState.Serve);
     }
 
     private void SetAIServeState()
