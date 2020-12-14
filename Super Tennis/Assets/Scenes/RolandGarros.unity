@@ -954,7 +954,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 90945331}
-  m_Enabled: 0
+  m_Enabled: 1
 --- !u!124 &90945333
 Behaviour:
   m_ObjectHideFlags: 0
@@ -8631,7 +8631,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 879782273}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!124 &879782277
 Behaviour:
   m_ObjectHideFlags: 0
@@ -11784,24 +11784,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1251192175}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd3ed65bfbd62c146950318fcde25df0, type: 3}
+  m_Script: {fileID: 11500000, guid: 7ab41c9fbbd7cfa45b775f841d92cac6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ball: {fileID: 1469426002}
   racket: {fileID: 1251192176}
-  hitThreshold: 10
+  hitThreshold: 5
   animator: {fileID: 1251192177}
-  ballRb: {fileID: 0}
-  waitCounter: 0
-  waitTime: 1
-  state: 1
-  from: 0
-  serveSide: 0
-  hitSide: 0
-  hitStrength: 0
-  accuracy: 0.8
   audioClipHitBall: {fileID: 1251192182}
-  hit: {x: 40, y: 6, z: 0}
+  hit: {x: 0, y: 0, z: 0}
 --- !u!64 &1251192180
 MeshCollider:
   m_ObjectHideFlags: 0
