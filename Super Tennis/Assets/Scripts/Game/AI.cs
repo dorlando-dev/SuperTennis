@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -103,12 +103,37 @@ public class AI : MonoBehaviour
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
+            BallHitter.Side side;
+            float sideR = UnityEngine.Random.value;
+            if(sideR < 0.33)
+            {
+                side = BallHitter.Side.Left;
+            } else if (sideR < 0.66)
+            {
+                side = BallHitter.Side.Center;
+            } else
+            {
+                side = BallHitter.Side.Right;
+            }
 
-            Vector2 target = new Vector2((UnityEngine.Random.value * 2) - 1, (UnityEngine.Random.value * 2) - 1);
+            BallHitter.Strength depth;
+            float depthR = UnityEngine.Random.value;
+            if(depthR < 0.15)
+            {
+                depth = BallHitter.Strength.Drop;
+                Animator.SetTrigger("Strafe");
+            } else if (depthR < 0.8)
+            {
+                depth = BallHitter.Strength.Middle;
+                Animator.SetTrigger("Drive");
+            } else
+            {
+                depth = BallHitter.Strength.Lob;
+                Animator.SetTrigger("PowerfullShot");
+            }
 
-            Animator.SetTrigger("Drive");
 
-            Vector3 hit = ballHitter.hitBall(target, difficulty, false)[1];
+            Vector3 hit = ballHitter.hitBall(side, depth, difficulty, false)[1];
             ballRb.velocity = hit;
             MatchManager.Instance.SetLastHit(2, Vector3.zero);
             audioClipHitBall.Play();
@@ -123,11 +148,20 @@ public class AI : MonoBehaviour
         {
             ball.transform.position = racket.transform.position;
 
-            Vector2 target = new Vector2((UnityEngine.Random.value * 2) - 1, (UnityEngine.Random.value * 2) - 1);
+            BallHitter.Side side;
+            float sideR = UnityEngine.Random.value;
+            if(sideR < 0.33)
+            {
+                side = BallHitter.Side.Left;
+            } else if (sideR < 0.66)
+            {
+                side = BallHitter.Side.Center;
+            } else
+            {
+                side = BallHitter.Side.Right;
+            }
 
-            Animator.SetTrigger("Serve");
-
-            Vector3 hit = ballHitter.serve(target, serveSide, difficulty, false)[1];
+            Vector3 hit = ballHitter.serve(side, serveSide, difficulty, false)[1];
             ballRb.velocity = hit;
             MatchManager.Instance.SetLastHit(2, Vector3.zero);
             audioClipHitBall.Play();
