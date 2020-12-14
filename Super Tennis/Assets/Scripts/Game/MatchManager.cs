@@ -116,6 +116,9 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         if (multiplayer)
         {
             P2 = OtherPlayer;
+            Camera.main.rect = new Rect(0f, 0f, 0.495f, 1f);
+            camera2.rect = new Rect(0.505f, 0f, 0.495f, 1f);
+            camera2.gameObject.SetActive(true);
         }
         else
             P2 = AI;
