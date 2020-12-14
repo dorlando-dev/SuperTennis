@@ -367,6 +367,7 @@ MonoBehaviour:
   goPointWinner: {fileID: 867943475}
   audioClipHitP1Wins: {fileID: 18564050}
   audioClipHitP2Wins: {fileID: 18564049}
+  camera2: {fileID: 0}
 --- !u!4 &18564048
 Transform:
   m_ObjectHideFlags: 0
@@ -3123,12 +3124,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 278419474}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29a22ba94e0316341b60a520df9872d6, type: 3}
+  m_Script: {fileID: 11500000, guid: 94ba78aafd41238488ee58763ee5171b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 20
+  speed: 5
   CharacterController: {fileID: 278419478}
-  Animator: {fileID: 278419475}
 --- !u!82 &278419477
 AudioSource:
   m_ObjectHideFlags: 0
@@ -11699,7 +11699,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100094, guid: 19fdf76f18fd0b849b501c18a87fbbdf, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400094, guid: 19fdf76f18fd0b849b501c18a87fbbdf, type: 3}
       propertyPath: m_LocalPosition.x
@@ -11816,12 +11816,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1251192175}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29a22ba94e0316341b60a520df9872d6, type: 3}
+  m_Script: {fileID: 11500000, guid: 03460fb961ef2c346bcfca8b0048b973, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 20
+  speed: 5
   CharacterController: {fileID: 1251192183}
-  Animator: {fileID: 1251192177}
 --- !u!82 &1251192182
 AudioSource:
   m_ObjectHideFlags: 0
