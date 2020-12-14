@@ -40,7 +40,7 @@ public class Ball : MonoBehaviour
             MatchManager.Instance.SetBouncePosition(MatchManager.CourtPosition.PlayerSquareRight);
         else if (collision.gameObject.tag == "PlayerHalf")
             MatchManager.Instance.SetBouncePosition(MatchManager.CourtPosition.PlayerHalf);
-        else if(collision.gameObject.tag == "Player" || collision.gameObject.tag == "Racket")
+        else if(collision.gameObject.tag == "Player" || collision.gameObject.tag == "Player2" || collision.gameObject.tag == "Racket")
         {
 
         }

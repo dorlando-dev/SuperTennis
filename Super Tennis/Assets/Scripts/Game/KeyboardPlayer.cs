@@ -114,7 +114,10 @@ public class KeyboardPlayer : MonoBehaviour
             ball.transform.position = racket.transform.position;
             List<Vector3> ret = ballHitter.hitBall(hitSide, hitStrength, accuracy, true);
             ballRb.velocity = ret[1];
-            MatchManager.Instance.SetLastHit(1, ret[0]);
+            if(gameObject.tag == "Player")
+                MatchManager.Instance.SetLastHit(1, ret[0]);
+            else if (gameObject.tag == "Player2")
+                MatchManager.Instance.SetLastHit(2, ret[0]);
             audioClipHitBall.Play();
         }
     }
@@ -128,7 +131,10 @@ public class KeyboardPlayer : MonoBehaviour
             ball.transform.position = racket.transform.position;
             List<Vector3> ret = ballHitter.serve(hitSide, serveSide, accuracy, true);
             ballRb.velocity = ret[1];
-            MatchManager.Instance.SetLastHit(1, ret[0]);
+            if (gameObject.tag == "Player")
+                MatchManager.Instance.SetLastHit(1, ret[0]);
+            else if (gameObject.tag == "Player2")
+                MatchManager.Instance.SetLastHit(2, ret[0]);
             audioClipHitBall.Play();
         }
     }
