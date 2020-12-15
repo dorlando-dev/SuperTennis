@@ -28,7 +28,7 @@ public class BallHitter
         this.racket = racket;
     }
 
-public List<Vector3> hitBall(Side side, Strength strength, float accuracy)
+    public List<Vector3> hitBall(Side side, Strength strength, float accuracy)
     {
         Vector2 pPos = new Vector2(racket.position.x, racket.position.y);
 
@@ -52,7 +52,7 @@ public List<Vector3> hitBall(Side side, Strength strength, float accuracy)
         return ret;
     }
 
-public List<Vector3> serve(Side side, Side serve, float accuracy)
+    public List<Vector3> serve(Side side, Side serve, float accuracy)
     {
         Vector2 pPos = new Vector2(racket.position.x, racket.position.y);
 
@@ -68,7 +68,7 @@ public List<Vector3> serve(Side side, Side serve, float accuracy)
         return ret;
     }
 
-public Vector2 getTargetPosition(Side side, Strength strength, Side serve, float depth, float width)
+    public Vector2 getTargetPosition(Side side, Strength strength, Side serve, float depth, float width)
     {
         float targetDepthR = 0.6f;
         if(strength == Strength.Lob)
@@ -159,6 +159,9 @@ public Vector2 getTargetPosition(Side side, Strength strength, Side serve, float
         float tDepth = (aim.x + 1) / 2;
         float tSide = (aim.y) / 2;
 
+        tDepth *= 0.95f;
+        tSide *= 0.95f;
+
         float tX = tDepth * depth;
         float tZ = - width * tSide;
 
@@ -180,6 +183,9 @@ public Vector2 getTargetPosition(Side side, Strength strength, Side serve, float
 
         float tDepth = (aim.x + 1) / 2;
         float tSide = (aim.y + 1) / 2;
+
+        tDepth *= 0.95f;
+        tSide *= 0.95f;
 
         float tX = tDepth * depth;
         float tZ = 0;

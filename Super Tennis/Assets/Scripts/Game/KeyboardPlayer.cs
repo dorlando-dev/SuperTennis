@@ -21,6 +21,9 @@ public class KeyboardPlayer : MonoBehaviour
     private float accuracy = 0.8f;
     public AudioSource audioClipHitBall;
 
+    private int hitCooldown = 200;
+    private int hitCounter;
+
     private Keyboard kb;
 
     public Vector3 hit;
@@ -34,6 +37,7 @@ public class KeyboardPlayer : MonoBehaviour
 
     void Update()
     {
+        hitCounter = hitCounter - 1 > 0 ? hitCounter - 1 : 0;
         switch (state)
         {
             case MatchManager.PlayerState.Serve:
@@ -114,7 +118,7 @@ public class KeyboardPlayer : MonoBehaviour
             ball.gameObject.GetComponent<Ball>().Freeze(false);
 
         float dist = Vector3.Distance(ball.transform.position, transform.position);
-        if (dist <= hitThreshold)
+        if (dist <= hitThreshold && hitCounter <= 0)
         {
             ball.transform.position = racket.transform.position;
             List<Vector3> ret = ballHitter.hitBall(hitSide, hitStrength, accuracy);
@@ -131,7 +135,7 @@ public class KeyboardPlayer : MonoBehaviour
     {
         ball.gameObject.GetComponent<Ball>().Freeze(false);
         float dist = Vector3.Distance(ball.transform.position, transform.position);
-        if (dist <= hitThreshold)
+        if (dist <= hitThreshold && hitCounter <= 0)
         {
             ball.transform.position = racket.transform.position;
             List<Vector3> ret = ballHitter.serve(hitSide, serveSide, accuracy);

@@ -21,6 +21,9 @@ public class GamepadPlayer : MonoBehaviour
     private float accuracy = 1.0f;
     public AudioSource audioClipHitBall;
 
+    private int hitCooldown = 200;
+    private int hitCounter;
+
     private Gamepad gp;
 
     public Vector3 hit;
@@ -34,6 +37,7 @@ public class GamepadPlayer : MonoBehaviour
 
     void Update()
     {
+        hitCounter = hitCounter - 1 > 0 ? hitCounter - 1 : 0;
         switch (state)
         {
             case MatchManager.PlayerState.Serve:
@@ -81,7 +85,7 @@ public class GamepadPlayer : MonoBehaviour
 
         float dist = Vector3.Distance(ball.transform.position, transform.position);
         Vector2 aim = gp.rightStick.ReadValue();
-        if (dist <= hitThreshold)
+        if (dist <= hitThreshold && hitCounter <= 0)
         {
             ball.transform.position = racket.transform.position;
             List<Vector3> ret = ballHitter.hitBall(aim, accuracy);
@@ -91,6 +95,7 @@ public class GamepadPlayer : MonoBehaviour
             else if (gameObject.tag == "Player2")
                 MatchManager.Instance.SetLastHit(2, ret[0]);
             audioClipHitBall.Play();
+            hitCounter = hitCooldown;
         }
     }
 
@@ -99,7 +104,7 @@ public class GamepadPlayer : MonoBehaviour
         ball.gameObject.GetComponent<Ball>().Freeze(false);
         float dist = Vector3.Distance(ball.transform.position, transform.position);
         Vector2 aim = gp.rightStick.ReadValue();
-        if (dist <= hitThreshold)
+        if (dist <= hitThreshold && hitCounter <= 0)
         {
             ball.transform.position = racket.transform.position;
             List<Vector3> ret = ballHitter.serve(aim, serveSide, accuracy);
@@ -109,6 +114,7 @@ public class GamepadPlayer : MonoBehaviour
             else if (gameObject.tag == "Player2")
                 MatchManager.Instance.SetLastHit(2, ret[0]);
             audioClipHitBall.Play();
+            hitCounter = hitCooldown;
         }
     }
 
