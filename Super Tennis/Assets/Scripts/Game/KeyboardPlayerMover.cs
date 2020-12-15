@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class KeyboardPlayerMover : MonoBehaviour
 {
-    public int speed = 5;
+    public int speed = 10;
     public CharacterController CharacterController;
 
     private int xMovement;
@@ -54,7 +54,7 @@ public class KeyboardPlayerMover : MonoBehaviour
         float x = Time.deltaTime * speed * direction.x;
         float z = Time.deltaTime * speed * direction.y;
 
-        Vector3 newPosition = new Vector3(x, -3.067f, z);
-        CharacterController.Move(newPosition);
+        Vector3 dir = new Vector3(x, 0, z);
+        CharacterController.Move(dir);
     }
 }

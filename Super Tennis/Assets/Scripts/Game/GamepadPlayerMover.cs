@@ -25,7 +25,15 @@ public class GamepadPlayerMover : MonoBehaviour
     {
         var direction = gp.leftStick.ReadValue();
 
-        MoveTo(new Vector2(-direction.y, direction.x).normalized);
+        if (CharacterController.transform.position.x < 0)
+        {
+            direction = new Vector2(direction.y, -direction.x);
+        } else
+        {
+            direction = new Vector2(-direction.y, direction.x);
+        }
+
+        MoveTo(direction.normalized);
     }
 
     private void MoveTo(Vector2 direction)
@@ -34,7 +42,7 @@ public class GamepadPlayerMover : MonoBehaviour
         float x = Time.deltaTime * speed * direction.x;
         float z = Time.deltaTime * speed * direction.y;
 
-        Vector3 newPosition = new Vector3(x, -3.067f, z);
-        CharacterController.Move(newPosition);
+        Vector3 dir = new Vector3(x, 0, z);
+        CharacterController.Move(dir);
     }
 }
