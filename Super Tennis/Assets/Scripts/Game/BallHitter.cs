@@ -70,7 +70,7 @@ public class BallHitter
 
     public Vector2 getTargetPosition(Side side, Strength strength, Side serve, float depth, float width)
     {
-        float targetDepthR = 0.6f;
+        float targetDepthR = 0.5f;
         if(strength == Strength.Lob)
         {
             targetDepthR = 0.85f;
@@ -177,7 +177,7 @@ public class BallHitter
         Debug.Log(serve);
         if (racket.position.x > 0)
         {
-            aim = new Vector2(aim.y, -aim.x);
+            aim = new Vector2(aim.y, aim.x);
         } else {
             aim = new Vector2(aim.y, aim.x);
         }

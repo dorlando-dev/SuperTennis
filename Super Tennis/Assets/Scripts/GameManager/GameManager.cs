@@ -20,33 +20,11 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
     public bool multiplayer = false;
     public bool isJoystick = false;
 
-    PlayerControls controls;
-
     // Start is called before the first frame update
     void Start()
     {
         SceneManager.LoadScene("MainMenu");
         DontDestroyOnLoad(this);
-        controls = new PlayerControls();
-        controls.Gameplay.Enable();
-        controls.UI.Menu.performed += ctx => ToggleMenu();
-        controls.Gameplay.Menu.performed += ctx => ToggleMenu();
-    }
-
-    private void ToggleMenu()
-    {
-        if (gameState == GameState.Paused)
-        {
-            Resume();
-            controls.UI.Disable();
-            controls.Gameplay.Enable();
-        }
-        else if(gameState == GameState.Game)
-        {
-            Pause();
-            controls.UI.Enable();
-            controls.Gameplay.Disable();
-        }
     }
 
     public enum GameState
