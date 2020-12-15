@@ -42,6 +42,11 @@ public class GamepadPlayer : MonoBehaviour
                     animator.SetTrigger("Serve");
                     state = MatchManager.PlayerState.WaitAnimation;
                     from = MatchManager.PlayerState.Serve;
+                    gameObject.GetComponent<GamepadPlayerMover>().serving = false;
+                }
+                else
+                {
+                    gameObject.GetComponent<GamepadPlayerMover>().serving = true;
                 }
                 break;
             case MatchManager.PlayerState.Play:

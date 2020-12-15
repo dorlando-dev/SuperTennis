@@ -43,6 +43,11 @@ public class KeyboardPlayer : MonoBehaviour
                     state = MatchManager.PlayerState.WaitAnimation;
                     from = MatchManager.PlayerState.Serve;
                     GetShotType();
+                    gameObject.GetComponent<KeyboardPlayerMover>().serving = false;
+                }
+                else
+                {
+                    gameObject.GetComponent<KeyboardPlayerMover>().serving = true;
                 }
                 break;
             case MatchManager.PlayerState.Play:

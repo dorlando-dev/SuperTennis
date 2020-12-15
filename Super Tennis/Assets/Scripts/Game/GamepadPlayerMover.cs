@@ -14,6 +14,7 @@ public class GamepadPlayerMover : MonoBehaviour
     private Vector2 movement;
 
     private Gamepad gp;
+    public bool serving { get; set; }
 
     void Awake()
     {
@@ -32,8 +33,8 @@ public class GamepadPlayerMover : MonoBehaviour
         {
             direction = new Vector2(-direction.y, direction.x);
         }
-
-        MoveTo(direction.normalized);
+        if(!serving)
+            MoveTo(direction.normalized);
     }
 
     private void MoveTo(Vector2 direction)

@@ -89,7 +89,8 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     {
         Serve,
         Play,
-        WaitAnimation
+        WaitAnimation,
+        Stop
     }
 
     public enum CourtPosition
@@ -148,7 +149,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         }
         matches = matchesRemaining;
         matchesRemaining--;
-        //textMatch.text = "1";
+        textMatch.text = "1";
         gamesToWin = gameManager.GetGamesToWin();
         difficulty = gameManager.GetDifficulty();
         if(!multiplayer)
@@ -194,7 +195,6 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                 }
                 break;
             case State.WaitPointOver:
-                Debug.Log("A");
                 DisplayPointResult("POINT " + (pointWinner == 1 ? "P1" : "P2"));
                 if (waitCounter < waitTime)
                     waitCounter += Time.deltaTime;

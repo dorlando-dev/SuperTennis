@@ -14,6 +14,7 @@ public class KeyboardPlayerMover : MonoBehaviour
     private Vector2 movement;
 
     private Keyboard kb;
+    public bool serving { get; set; }
 
     void Awake()
     {
@@ -45,7 +46,8 @@ public class KeyboardPlayerMover : MonoBehaviour
             zMovement -= 1;
         }
 
-        MoveTo(new Vector2(xMovement, zMovement).normalized);
+        if (!serving)
+            MoveTo(new Vector2(xMovement, zMovement).normalized);
     }
 
     private void MoveTo(Vector2 direction)
