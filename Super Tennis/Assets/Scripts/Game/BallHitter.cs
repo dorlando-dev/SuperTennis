@@ -174,25 +174,34 @@ public class BallHitter
 
     public Vector2 getServeTargetPosition(Vector2 aim, Side serve, float depth, float width)
     {
+        Debug.Log(serve);
         if (racket.position.x > 0)
         {
-            aim = new Vector2(-aim.y, -aim.x);
+            aim = new Vector2(aim.y, -aim.x);
         } else {
             aim = new Vector2(aim.y, aim.x);
         }
 
-        float tDepth = (aim.x * 0.75f + 1) / 2;
-        float tSide = (aim.y * 0.75f + 1) / 2;
+        float tDepth = (aim.x + 1) / 2;
+        float tSide = (aim.y + 1) / 2;
+
+        tDepth *= 0.75f;
+        tSide *= 0.95f;
 
         float tX = tDepth * depth;
         float tZ = 0;
-        if (serve == Side.Left)
+        if (serve == Side.Right)
+        {
+            tZ = -width * tSide;
+        }
+        else if (serve == Side.Left)
         {
             tZ = width * (1f - tSide);
         }
-        else
-        {
-            tZ = - width * tSide;
+
+        if (racket.position.x > 0) {
+            tX = -tX;
+            tZ = -tZ;
         }
 
         return new Vector2(tX, tZ);

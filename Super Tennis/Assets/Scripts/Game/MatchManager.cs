@@ -116,13 +116,13 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         if (multiplayer)
         {
             P1 = PlayerKeyboard;
-            P2 = Player2;            
-            
+            P2 = Player2;
+
             Camera.main.rect = new Rect(0f, 0.505f, 1f, 0.495f);
             canvas = canvasMP;
 
             camera2.rect = new Rect(0f, 0f, 1f, 0.495f);
-            camera2.gameObject.SetActive(true);            
+            camera2.gameObject.SetActive(true);
         }
         else
         {
@@ -501,16 +501,21 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         if(multiplayer)
             SetPlayer2Position(new Vector3(P2Positions[servePosition].position.x, P2Positions[servePosition].position.y, P2Positions[servePosition].position.z));
         else
-            P2.transform.position = new Vector3(P2Positions[servePosition].position.x, P2Positions[servePosition].position.y, P2Positions[servePosition].position.z);        
-        
-        if(isJoystick)
-            P1.GetComponent<GamepadPlayer>().SetServeSide(servePosition);
-        else
-            P1.GetComponent<KeyboardPlayer>().SetServeSide(servePosition);
-        
+            P2.transform.position = new Vector3(P2Positions[servePosition].position.x, P2Positions[servePosition].position.y, P2Positions[servePosition].position.z);
+
         if(!multiplayer)
+        {
             P2.GetComponent<AI>().SetServeSide(servePosition);
-        
+            if(isJoystick)
+                P1.GetComponent<GamepadPlayer>().SetServeSide(servePosition);
+            else
+                P1.GetComponent<KeyboardPlayer>().SetServeSide(servePosition);
+        } else
+        {
+            P1.GetComponent<KeyboardPlayer>().SetServeSide(servePosition);
+            P2.GetComponent<GamepadPlayer>().SetServeSide(servePosition);
+        }
+
         if (currentPlayer == 1)
             ball.transform.position = new Vector3(P1.transform.position.x, 3, P1.transform.position.z);
         else
