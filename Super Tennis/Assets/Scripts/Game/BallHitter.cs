@@ -156,7 +156,7 @@ public class BallHitter
             aim = new Vector2(aim.y, aim.x);
         }
 
-        float tDepth = (aim.x + 1) / 2;
+        float tDepth = (aim.x * 0.75f + 1) / 2;
         float tSide = (aim.y) / 2;
 
         tDepth *= 0.95f;
@@ -181,11 +181,8 @@ public class BallHitter
             aim = new Vector2(aim.y, aim.x);
         }
 
-        float tDepth = (aim.x + 1) / 2;
-        float tSide = (aim.y + 1) / 2;
-
-        tDepth *= 0.95f;
-        tSide *= 0.95f;
+        float tDepth = (aim.x * 0.75f + 1) / 2;
+        float tSide = (aim.y * 0.75f + 1) / 2;
 
         float tX = tDepth * depth;
         float tZ = 0;
