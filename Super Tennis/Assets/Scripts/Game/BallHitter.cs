@@ -149,8 +149,10 @@ public List<Vector3> serve(Vector2 aim, Side serve, float accuracy)
 
 public Vector2 getTargetPosition(Vector2 aim, float depth, float width)
 {
+    aim = new Vector2(aim.y, -aim.x);
+
     float tDepth = (aim.x + 1) / 2;
-    float tSide = (aim.y + 1) / 2;
+    float tSide = (aim.y) / 2;
 
     float tX = tDepth * depth;
     float tZ = - width * tSide;
@@ -158,7 +160,6 @@ public Vector2 getTargetPosition(Vector2 aim, float depth, float width)
     if (racket.position.x > 0)
     {
         tX = -tX;
-        tZ = -tZ;
     }
 
     return new Vector2(tX, tZ);
@@ -166,8 +167,10 @@ public Vector2 getTargetPosition(Vector2 aim, float depth, float width)
 
 public Vector2 getServeTargetPosition(Vector2 aim, Side serve, float depth, float width)
 {
+    aim = new Vector2(aim.y, -aim.x);
+
     float tDepth = (aim.x + 1) / 2;
-    float tSide = (aim.y + 1) / 2;
+    float tSide = (aim.y) / 2;
 
     float tX = tDepth * depth;
     float tZ = 0;
@@ -183,7 +186,6 @@ public Vector2 getServeTargetPosition(Vector2 aim, Side serve, float depth, floa
     if (racket.position.x > 0)
     {
         tX = -tX;
-        tZ = -tZ;
     }
 
     return new Vector2(tX, tZ);

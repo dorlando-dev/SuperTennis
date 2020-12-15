@@ -18,7 +18,7 @@ public class GamepadPlayer : MonoBehaviour
     private BallHitter.Side serveSide;
     private BallHitter.Side hitSide;
     private BallHitter.Strength hitStrength;
-    private float accuracy = 0.8f;
+    private float accuracy = 1.0f;
     public AudioSource audioClipHitBall;
 
     private Gamepad gp;
@@ -76,7 +76,6 @@ public class GamepadPlayer : MonoBehaviour
 
         float dist = Vector3.Distance(ball.transform.position, transform.position);
         Vector2 aim = gp.rightStick.ReadValue();
-        Debug.Log(aim);
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
@@ -94,7 +93,7 @@ public class GamepadPlayer : MonoBehaviour
     {
         ball.gameObject.GetComponent<Ball>().Freeze(false);
         float dist = Vector3.Distance(ball.transform.position, transform.position);
-        Vector2 aim = gp.leftStick.ReadValue();
+        Vector2 aim = gp.rightStick.ReadValue();
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
