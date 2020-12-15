@@ -112,7 +112,7 @@ public class KeyboardPlayer : MonoBehaviour
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
-            List<Vector3> ret = ballHitter.hitBall(hitSide, hitStrength, accuracy, true);
+            List<Vector3> ret = ballHitter.hitBall(hitSide, hitStrength, accuracy);
             ballRb.velocity = ret[1];
             if(gameObject.tag == "Player")
                 MatchManager.Instance.SetLastHit(1, ret[0]);
@@ -129,7 +129,7 @@ public class KeyboardPlayer : MonoBehaviour
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
-            List<Vector3> ret = ballHitter.serve(hitSide, serveSide, accuracy, true);
+            List<Vector3> ret = ballHitter.serve(hitSide, serveSide, accuracy);
             ballRb.velocity = ret[1];
             if (gameObject.tag == "Player")
                 MatchManager.Instance.SetLastHit(1, ret[0]);

@@ -80,7 +80,7 @@ public class GamepadPlayer : MonoBehaviour
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
-            List<Vector3> ret = ballHitter.hitBall(aim, accuracy, false);
+            List<Vector3> ret = ballHitter.hitBall(aim, accuracy);
             ballRb.velocity = ret[1];
             if (gameObject.tag == "Player")
                 MatchManager.Instance.SetLastHit(1, ret[0]);
@@ -98,7 +98,7 @@ public class GamepadPlayer : MonoBehaviour
         if (dist <= hitThreshold)
         {
             ball.transform.position = racket.transform.position;
-            List<Vector3> ret = ballHitter.serve(aim, serveSide, accuracy, false);
+            List<Vector3> ret = ballHitter.serve(aim, serveSide, accuracy);
             ballRb.velocity = ret[1];
             if (gameObject.tag == "Player")
                 MatchManager.Instance.SetLastHit(1, ret[0]);

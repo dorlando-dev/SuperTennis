@@ -28,7 +28,7 @@ public class BallHitter
         this.racket = racket;
     }
 
-public List<Vector3> hitBall(Side side, Strength strength, float accuracy, bool isPlayer)
+public List<Vector3> hitBall(Side side, Strength strength, float accuracy)
     {
         Vector2 pPos = new Vector2(racket.position.x, racket.position.y);
 
@@ -42,7 +42,7 @@ public List<Vector3> hitBall(Side side, Strength strength, float accuracy, bool 
             netTargetHeight = 1f;
         }
 
-        Vector2 tPos = getTargetPosition(side, strength, Side.Center, sideLength, sideWidth, isPlayer);
+        Vector2 tPos = getTargetPosition(side, strength, Side.Center, sideLength, sideWidth);
 
         Vector3 vel = hitTowardsPoint(tPos, netTargetHeight);
 
@@ -52,13 +52,13 @@ public List<Vector3> hitBall(Side side, Strength strength, float accuracy, bool 
         return ret;
     }
 
-public List<Vector3> serve(Side side, Side serve, float accuracy, bool isPlayer)
+public List<Vector3> serve(Side side, Side serve, float accuracy)
     {
         Vector2 pPos = new Vector2(racket.position.x, racket.position.y);
 
         float netTargetHeight = 1.5f;
 
-        Vector2 tPos = getTargetPosition(side, Strength.Lob, serve, serveLength, serveWidth, isPlayer);
+        Vector2 tPos = getTargetPosition(side, Strength.Lob, serve, serveLength, serveWidth);
 
         Vector3 vel = hitTowardsPoint(tPos, netTargetHeight);
 
@@ -68,7 +68,7 @@ public List<Vector3> serve(Side side, Side serve, float accuracy, bool isPlayer)
         return ret;
     }
 
-public Vector2 getTargetPosition(Side side, Strength strength, Side serve, float depth, float width, bool isPlayer)
+public Vector2 getTargetPosition(Side side, Strength strength, Side serve, float depth, float width)
     {
         float targetDepthR = 0.6f;
         if(strength == Strength.Lob)
@@ -105,7 +105,8 @@ public Vector2 getTargetPosition(Side side, Strength strength, Side serve, float
             tZ = - width * targetSideR;
         }
 
-        if (!isPlayer)
+        // One side of the court
+        if (racket.position.x > 0)
         {
             tX = -tX;
             tZ = -tZ;
@@ -114,13 +115,13 @@ public Vector2 getTargetPosition(Side side, Strength strength, Side serve, float
         return new Vector2(tX, tZ);
     }
 
-public List<Vector3> hitBall(Vector2 aim, float accuracy, bool isPlayer)
+public List<Vector3> hitBall(Vector2 aim, float accuracy)
 {
     Vector2 pPos = new Vector2(racket.position.x, racket.position.y);
 
     float netTargetHeight = 2f;
 
-    Vector2 tPos = getTargetPosition(aim, sideLength, sideWidth, isPlayer);
+    Vector2 tPos = getTargetPosition(aim, sideLength, sideWidth);
 
     Vector3 vel = hitTowardsPoint(tPos, netTargetHeight);
 
@@ -130,13 +131,13 @@ public List<Vector3> hitBall(Vector2 aim, float accuracy, bool isPlayer)
     return ret;
 }
 
-public List<Vector3> serve(Vector2 aim, Side serve, float accuracy, bool isPlayer)
+public List<Vector3> serve(Vector2 aim, Side serve, float accuracy)
 {
     Vector2 pPos = new Vector2(racket.position.x, racket.position.y);
 
     float netTargetHeight = 1.5f;
 
-    Vector2 tPos = getServeTargetPosition(aim, serve, serveLength, serveWidth, isPlayer);
+    Vector2 tPos = getServeTargetPosition(aim, serve, serveLength, serveWidth);
 
     Vector3 vel = hitTowardsPoint(tPos, netTargetHeight);
 
@@ -146,7 +147,7 @@ public List<Vector3> serve(Vector2 aim, Side serve, float accuracy, bool isPlaye
     return ret;
 }
 
-public Vector2 getTargetPosition(Vector2 aim, float depth, float width, bool isPlayer)
+public Vector2 getTargetPosition(Vector2 aim, float depth, float width)
 {
     float tDepth = (aim.x + 1) / 2;
     float tSide = (aim.y + 1) / 2;
@@ -154,7 +155,7 @@ public Vector2 getTargetPosition(Vector2 aim, float depth, float width, bool isP
     float tX = tDepth * depth;
     float tZ = - width * tSide;
 
-    if (!isPlayer)
+    if (racket.position.x > 0)
     {
         tX = -tX;
         tZ = -tZ;
@@ -163,7 +164,7 @@ public Vector2 getTargetPosition(Vector2 aim, float depth, float width, bool isP
     return new Vector2(tX, tZ);
 }
 
-public Vector2 getServeTargetPosition(Vector2 aim, Side serve, float depth, float width, bool isPlayer)
+public Vector2 getServeTargetPosition(Vector2 aim, Side serve, float depth, float width)
 {
     float tDepth = (aim.x + 1) / 2;
     float tSide = (aim.y + 1) / 2;
@@ -179,7 +180,7 @@ public Vector2 getServeTargetPosition(Vector2 aim, Side serve, float depth, floa
         tZ = - width * tSide;
     }
 
-    if (!isPlayer)
+    if (racket.position.x > 0)
     {
         tX = -tX;
         tZ = -tZ;

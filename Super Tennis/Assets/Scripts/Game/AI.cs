@@ -133,7 +133,7 @@ public class AI : MonoBehaviour
             }
 
 
-            Vector3 hit = ballHitter.hitBall(side, depth, difficulty, false)[1];
+            Vector3 hit = ballHitter.hitBall(side, depth, difficulty)[1];
             ballRb.velocity = hit;
             MatchManager.Instance.SetLastHit(2, Vector3.zero);
             audioClipHitBall.Play();
@@ -161,7 +161,7 @@ public class AI : MonoBehaviour
                 side = BallHitter.Side.Right;
             }
 
-            Vector3 hit = ballHitter.serve(side, serveSide, difficulty, false)[1];
+            Vector3 hit = ballHitter.serve(side, serveSide, difficulty)[1];
             ballRb.velocity = hit;
             MatchManager.Instance.SetLastHit(2, Vector3.zero);
             audioClipHitBall.Play();
