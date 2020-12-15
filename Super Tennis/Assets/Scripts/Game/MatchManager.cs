@@ -20,14 +20,18 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
 
     public List<Transform> P1Positions;
     public List<Transform> P2Positions;
-    public TMP_Text textGameMode;
-    public TMP_Text textMatch;
-    public TMP_Text textScoreP1;
-    public TMP_Text textScoreP2;
-    public TMP_Text textGamesP1;
-    public TMP_Text textGamesP2;
-    public TMP_Text textPointWinner;
-    public GameObject goPointWinner;
+
+    public Canvas canvasSP;
+    public Canvas canvasMP;
+    private Canvas canvas;
+    private TMP_Text textGameMode;
+    private TMP_Text textMatch;
+    private TMP_Text textScoreP1;
+    private TMP_Text textScoreP2;
+    private TMP_Text textGamesP1;
+    private TMP_Text textGamesP2;
+    private TMP_Text textPointWinner;
+    private GameObject pointWinnerBanner;
     public AudioSource audioClipHitP1Wins;
     public AudioSource audioClipHitP2Wins;
     public Camera camera2;
@@ -107,6 +111,31 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
 
         GameManager.GameMode gameMode = gameManager.GetGameMode();
         isJoystick = gameManager.IsJoystick();
+        multiplayer = gameManager.GetMultiplayer();
+        if (multiplayer)
+        {
+            P1 = PlayerKeyboard;
+            P2 = Player2;            
+            
+            Camera.main.rect = new Rect(0f, 0.505f, 1f, 0.495f);
+            canvas = canvasMP;
+
+            camera2.rect = new Rect(0f, 0f, 1f, 0.495f);
+            camera2.gameObject.SetActive(true);            
+        }
+        else
+        {
+            if (isJoystick)
+                P1 = PlayerJoystick;
+            else
+                P1 = PlayerKeyboard;
+            P2 = AI;
+            canvas = canvasSP;
+        }
+        P1.SetActive(true);
+        P2.SetActive(true);
+        canvas.gameObject.SetActive(true);
+        SetFromCanvas();
         if (gameMode == GameManager.GameMode.Tournament)
         {
             matchesRemaining = gameManager.GetTournamentMatches();
@@ -116,32 +145,10 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         {
             matchesRemaining = gameManager.GetExhibitionMatches();
             textGameMode.text = "Exhibition";
-            multiplayer = gameManager.GetMultiplayer();
-
         }
-        if (multiplayer)
-        {
-            P1 = PlayerKeyboard;
-            P2 = Player2;            
-            
-            Camera.main.rect = new Rect(0f, 0.505f, 1f, 0.495f);
-            camera2.rect = new Rect(0f, 0f, 1f, 0.495f);         
-            camera2.gameObject.SetActive(true);
-        }
-        else
-        {
-            if (isJoystick)
-                P1 = PlayerJoystick;
-            else
-                P1 = PlayerKeyboard;
-            P2 = AI;
-        }
-        P1.SetActive(true);
-        P2.SetActive(true);
-
         matches = matchesRemaining;
         matchesRemaining--;
-        textMatch.text = "1";
+        //textMatch.text = "1";
         gamesToWin = gameManager.GetGamesToWin();
         difficulty = gameManager.GetDifficulty();
         if(!multiplayer)
@@ -193,7 +200,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                     waitCounter += Time.deltaTime;
                 else
                 {
-                    goPointWinner.SetActive(false);
+                    pointWinnerBanner.SetActive(false);
                     waitCounter = 0;
                     state = State.Out;
                 }
@@ -222,7 +229,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                     waitCounter += Time.deltaTime;
                 else
                 {
-                    goPointWinner.SetActive(false);
+                    pointWinnerBanner.SetActive(false);
                     waitCounter = 0;
                     ResetGame();
                 }
@@ -234,7 +241,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                     waitCounter += Time.deltaTime;
                 else
                 {
-                    goPointWinner.SetActive(false);
+                    pointWinnerBanner.SetActive(false);
                     waitCounter = 0;
                     if (matchesRemaining >= 0 && matchWinner == 1)
                     {
@@ -249,6 +256,33 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         }
     }
 
+    private void SetFromCanvas()
+    {
+        var scoreBoard = GetChildWithName(canvas.gameObject, "ScoreBoard");
+        textGameMode = GetChildWithName(scoreBoard, "GameMode").GetComponent<TMP_Text>();
+        textMatch = GetChildWithName(scoreBoard, "Match").GetComponent<TMP_Text>();
+        textScoreP1 = GetChildWithName(scoreBoard, "PointsP1").GetComponent<TMP_Text>();
+        textScoreP2 = GetChildWithName(scoreBoard, "PointsP2").GetComponent<TMP_Text>();
+        textGamesP1 = GetChildWithName(scoreBoard, "GamesP1").GetComponent<TMP_Text>();
+        textGamesP2 = GetChildWithName(scoreBoard, "GamesP2").GetComponent<TMP_Text>();
+        pointWinnerBanner = GetChildWithName(canvas.gameObject, "PointWinner");
+        textPointWinner = pointWinnerBanner.GetComponent<TMP_Text>();
+    }
+
+    GameObject GetChildWithName(GameObject obj, string name)
+    {
+        Transform trans = obj.transform;
+        Transform childTrans = trans.Find(name);
+        if (childTrans != null)
+        {
+            return childTrans.gameObject;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     private void TriggerSound()
     {
         if (pointWinner == 1)
@@ -260,7 +294,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     private void DisplayPointResult(string text)
     {
         textPointWinner.text = text;
-        goPointWinner.SetActive(true);
+        pointWinnerBanner.SetActive(true);
     }
 
     private bool IsPointOver()
