@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class Player : MonoBehaviour
+public class KeyboardPlayer : MonoBehaviour
 {
     public GameObject ball;
     public GameObject racket;
@@ -12,66 +13,71 @@ public class Player : MonoBehaviour
     BallHitter ballHitter;
     private float waitCounter = 0f;
     private float waitTime = 1f;
-    private State state = State.Play;
-    private State from;
+    private MatchManager.PlayerState state = MatchManager.PlayerState.Play;
+    private MatchManager.PlayerState from;
     private BallHitter.Side serveSide;
     private BallHitter.Side hitSide;
     private BallHitter.Strength hitStrength;
     private float accuracy = 0.8f;
     public AudioSource audioClipHitBall;
 
-    public enum State
-    {
-        Serve,
-        Play,
-        WaitAnimation
-    }
+    private int hitCooldown = 200;
+    private int hitCounter;
+
+    private Keyboard kb;
 
     public Vector3 hit;
 
     void Start()
     {
+        kb = Keyboard.current;
         ballRb = ball.GetComponent<Rigidbody>();
         ballHitter = new BallHitter(racket.transform);
     }
 
     void Update()
     {
+        hitCounter = hitCounter - 1 > 0 ? hitCounter - 1 : 0;
         switch (state)
         {
-            case State.Serve:
-                if (Input.GetKeyDown("space"))
+            case MatchManager.PlayerState.Serve:
+                if (kb.spaceKey.isPressed)
                 {
                     animator.SetTrigger("Serve");
-                    state = State.WaitAnimation;
-                    from = State.Serve;
+                    state = MatchManager.PlayerState.WaitAnimation;
+                    from = MatchManager.PlayerState.Serve;
                     GetShotType();
+                    gameObject.GetComponent<KeyboardPlayerMover>().serving = false;
+                }
+                else
+                {
+                    gameObject.GetComponent<KeyboardPlayerMover>().serving = true;
                 }
                 break;
-            case State.Play:
-                if (Input.GetKeyDown("space"))
+            case MatchManager.PlayerState.Play:
+                if (kb.spaceKey.isPressed)
                 {
-                    from = State.Play;
+                    from = MatchManager.PlayerState.Play;
                     GetShotType();
                     HitBall();
                 }
                 break;
 
-            case State.WaitAnimation:
+            case MatchManager.PlayerState.WaitAnimation:
                 if (waitCounter < waitTime)
                     waitCounter += Time.deltaTime;
                 else
                 {
-                    if (from == State.Play)
+                    if (from == MatchManager.PlayerState.Play)
                         HitBall();
-                    else if (from == State.Serve)
+                    else if (from == MatchManager.PlayerState.Serve)
                         Serve();
-                    state = State.Play;
+                    state = MatchManager.PlayerState.Play;
                     waitCounter = 0;
                 }
                 break;
         }
-        
+
     }
 
     private void GetShotType()
@@ -95,7 +101,7 @@ public class Player : MonoBehaviour
         {
             hitStrength = BallHitter.Strength.Drop;
         }
-        if(from == State.Play)
+        if(from == MatchManager.PlayerState.Play)
         {
             if (hitStrength == BallHitter.Strength.Drop)
                 animator.SetTrigger("Strafe");
@@ -108,16 +114,19 @@ public class Player : MonoBehaviour
 
     void HitBall()
     {
-        if(MatchManager.Instance.GetCurrentPlayer() == 1)
+        if((MatchManager.Instance.GetCurrentPlayer() == 1 && gameObject.tag == "Player") || (MatchManager.Instance.GetCurrentPlayer() == 2 && gameObject.tag == "Player2"))
             ball.gameObject.GetComponent<Ball>().Freeze(false);
-                
+
         float dist = Vector3.Distance(ball.transform.position, transform.position);
-        if (dist <= hitThreshold)
+        if (dist <= hitThreshold && hitCounter <= 0)
         {
             ball.transform.position = racket.transform.position;
-            List<Vector3> ret = ballHitter.hitBall(hitSide, hitStrength, accuracy, true);
+            List<Vector3> ret = ballHitter.hitBall(hitSide, hitStrength, accuracy);
             ballRb.velocity = ret[1];
-            MatchManager.Instance.SetLastHit(1, ret[0]);
+            if(gameObject.tag == "Player")
+                MatchManager.Instance.SetLastHit(1, ret[0]);
+            else if (gameObject.tag == "Player2")
+                MatchManager.Instance.SetLastHit(2, ret[0]);
             audioClipHitBall.Play();
         }
     }
@@ -126,12 +135,15 @@ public class Player : MonoBehaviour
     {
         ball.gameObject.GetComponent<Ball>().Freeze(false);
         float dist = Vector3.Distance(ball.transform.position, transform.position);
-        if (dist <= hitThreshold)
+        if (dist <= hitThreshold && hitCounter <= 0)
         {
             ball.transform.position = racket.transform.position;
-            List<Vector3> ret = ballHitter.serve(hitSide, serveSide, accuracy, true);
+            List<Vector3> ret = ballHitter.serve(hitSide, serveSide, accuracy);
             ballRb.velocity = ret[1];
-            MatchManager.Instance.SetLastHit(1, ret[0]);
+            if (gameObject.tag == "Player")
+                MatchManager.Instance.SetLastHit(1, ret[0]);
+            else if (gameObject.tag == "Player2")
+                MatchManager.Instance.SetLastHit(2, ret[0]);
             audioClipHitBall.Play();
         }
     }
@@ -144,7 +156,7 @@ public class Player : MonoBehaviour
             serveSide = BallHitter.Side.Right;
     }
 
-    public void SetState(State newState)
+    public void SetState(MatchManager.PlayerState newState)
     {
         state = newState;
     }

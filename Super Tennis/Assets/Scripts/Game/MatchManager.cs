@@ -11,22 +11,34 @@ using UnityEngine.UI;
 public class MatchManager : MonoBehaviorSingleton<MatchManager>
 {
     public GameObject ball;
-    public GameObject P1;
-    public GameObject P2;
+    private GameObject P1;
+    private GameObject P2;
+    public GameObject PlayerKeyboard;
+    public GameObject PlayerJoystick;
+    public GameObject Player2;
+    public GameObject AI;
+
     public List<Transform> P1Positions;
     public List<Transform> P2Positions;
-    public TMP_Text textGameMode;
-    public TMP_Text textMatch;
-    public TMP_Text textScoreP1;
-    public TMP_Text textScoreP2;
-    public TMP_Text textGamesP1;
-    public TMP_Text textGamesP2;
-    public TMP_Text textPointWinner;
-    public GameObject goPointWinner;
+
+    public Canvas canvasSP;
+    public Canvas canvasMP;
+    private Canvas canvas;
+    private TMP_Text textGameMode;
+    private TMP_Text textMatch;
+    private TMP_Text textScoreP1;
+    private TMP_Text textScoreP2;
+    private TMP_Text textGamesP1;
+    private TMP_Text textGamesP2;
+    private TMP_Text textPointWinner;
+    private GameObject pointWinnerBanner;
     public AudioSource audioClipHitP1Wins;
     public AudioSource audioClipHitP2Wins;
+    public Camera camera2;
 
     private GameManager gameManager;
+    private bool multiplayer;
+    private bool isJoystick;
     private int gamesToWin;
     private int difficulty;
     private string scoreP1 = "0";
@@ -61,6 +73,26 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         WaitMatchOver
     }
 
+    public enum AIState
+    {
+        WaitingToServe,
+        Serve,
+        HitBall,
+        WaitingForPlayerServe,
+        MoveToCenter,
+        MovingToBall,
+        WaitAnimation,
+        Stop
+    }
+
+    public enum PlayerState
+    {
+        Serve,
+        Play,
+        WaitAnimation,
+        Stop
+    }
+
     public enum CourtPosition
     {
         NotSet,
@@ -77,8 +109,34 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     void Start()
     {
         gameManager = GameManager.Instance;
-        
+
         GameManager.GameMode gameMode = gameManager.GetGameMode();
+        isJoystick = gameManager.IsJoystick();
+        multiplayer = gameManager.GetMultiplayer();
+        if (multiplayer)
+        {
+            P1 = PlayerKeyboard;
+            P2 = Player2;
+
+            Camera.main.rect = new Rect(0f, 0.505f, 1f, 0.495f);
+            canvas = canvasMP;
+
+            camera2.rect = new Rect(0f, 0f, 1f, 0.495f);
+            camera2.gameObject.SetActive(true);
+        }
+        else
+        {
+            if (isJoystick)
+                P1 = PlayerJoystick;
+            else
+                P1 = PlayerKeyboard;
+            P2 = AI;
+            canvas = canvasSP;
+        }
+        P1.SetActive(true);
+        P2.SetActive(true);
+        canvas.gameObject.SetActive(true);
+        SetFromCanvas();
         if (gameMode == GameManager.GameMode.Tournament)
         {
             matchesRemaining = gameManager.GetTournamentMatches();
@@ -94,7 +152,8 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         textMatch.text = "1";
         gamesToWin = gameManager.GetGamesToWin();
         difficulty = gameManager.GetDifficulty();
-        P2.GetComponent<AI>().SetDifficulty(difficulty);
+        if(!multiplayer)
+            P2.GetComponent<AI>().SetDifficulty(difficulty);
         ResetPoint();
     }
 
@@ -109,16 +168,20 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                     if (bouncePosition != CourtPosition.NotSet)
                     {
                         if (bouncePosition == expectedServePosition)
-                        {                            
+                        {
                             state = State.Game;
-                        }                            
+                        }
                         else
                         {
                             state = State.WaitPointOver;
                             pointWinner = currentPlayer == 1 ? 2 : 1;
                             TriggerSound();
-                            P2.GetComponent<AI>().SetState(AI.State.Stop);
-                        }                            
+                            if (!multiplayer)
+                            {
+                                P2.GetComponent<AI>().SetState(AIState.Stop);
+                            }
+
+                        }
                     }
                 }
                 break;
@@ -127,7 +190,8 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                 {
                     TriggerSound();
                     state = State.WaitPointOver;
-                    P2.GetComponent<AI>().SetState(AI.State.Stop);
+                    if(!multiplayer)
+                        P2.GetComponent<AI>().SetState(AIState.Stop);
                 }
                 break;
             case State.WaitPointOver:
@@ -136,12 +200,12 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                     waitCounter += Time.deltaTime;
                 else
                 {
-                    goPointWinner.SetActive(false);
+                    pointWinnerBanner.SetActive(false);
                     waitCounter = 0;
                     state = State.Out;
                 }
                 break;
-            case State.Out:                
+            case State.Out:
                 AddScore(pointWinner);
                 UpdateVisualScore();
                 if (isGameOver)
@@ -165,7 +229,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                     waitCounter += Time.deltaTime;
                 else
                 {
-                    goPointWinner.SetActive(false);
+                    pointWinnerBanner.SetActive(false);
                     waitCounter = 0;
                     ResetGame();
                 }
@@ -177,7 +241,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                     waitCounter += Time.deltaTime;
                 else
                 {
-                    goPointWinner.SetActive(false);
+                    pointWinnerBanner.SetActive(false);
                     waitCounter = 0;
                     if (matchesRemaining >= 0 && matchWinner == 1)
                     {
@@ -186,10 +250,37 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                     else
                     {
                         gameManager.ReturnToMenu();
-                    }                    
+                    }
                 }
                 break;
-        }          
+        }
+    }
+
+    private void SetFromCanvas()
+    {
+        var scoreBoard = GetChildWithName(canvas.gameObject, "ScoreBoard");
+        textGameMode = GetChildWithName(scoreBoard, "GameMode").GetComponent<TMP_Text>();
+        textMatch = GetChildWithName(scoreBoard, "Match").GetComponent<TMP_Text>();
+        textScoreP1 = GetChildWithName(scoreBoard, "PointsP1").GetComponent<TMP_Text>();
+        textScoreP2 = GetChildWithName(scoreBoard, "PointsP2").GetComponent<TMP_Text>();
+        textGamesP1 = GetChildWithName(scoreBoard, "GamesP1").GetComponent<TMP_Text>();
+        textGamesP2 = GetChildWithName(scoreBoard, "GamesP2").GetComponent<TMP_Text>();
+        pointWinnerBanner = GetChildWithName(canvas.gameObject, "PointWinner");
+        textPointWinner = pointWinnerBanner.GetComponent<TMP_Text>();
+    }
+
+    GameObject GetChildWithName(GameObject obj, string name)
+    {
+        Transform trans = obj.transform;
+        Transform childTrans = trans.Find(name);
+        if (childTrans != null)
+        {
+            return childTrans.gameObject;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     private void TriggerSound()
@@ -203,7 +294,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     private void DisplayPointResult(string text)
     {
         textPointWinner.text = text;
-        goPointWinner.SetActive(true);
+        pointWinnerBanner.SetActive(true);
     }
 
     private bool IsPointOver()
@@ -270,8 +361,11 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         ballBouncedTwice = false;
         if(player == 1 && (state == State.Serve || state == State.Game))
         {
-            P2.GetComponent<AI>().SetState(AI.State.MovingToBall);
-            P2.GetComponent<AI>().SetBallDestination(ballDestination);
+            if (!multiplayer)
+            {
+                P2.GetComponent<AI>().SetState(AIState.MovingToBall);
+                P2.GetComponent<AI>().SetBallDestination(ballDestination);
+            }
         }
     }
 
@@ -308,7 +402,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                 else
                 {
                     isGameOver = true;
-                    gameWinner = player;                    
+                    gameWinner = player;
                 }
                 break;
             case "Ad":
@@ -339,14 +433,17 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         textGamesP2.text = $"{gamesP2}";
         textScoreP1.text = $"{scoreP1}";
         textScoreP2.text = $"{scoreP2}";
-    }    
+    }
 
     private void ResetPoint()
     {
         SetServePosition();
         SetExpectedServePosition();
         SetPlayerState();
-        SetAIServeState();
+        if (multiplayer)
+            SetPlayer2State();
+        else
+            SetAIServeState();
         ChangeServePosition();
         bouncePosition = CourtPosition.NotSet;
         ballBounced = false;
@@ -358,18 +455,36 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
 
     private void SetPlayerState()
     {
-        if(currentPlayer == 1)
-            P1.GetComponent<Player>().SetState(Player.State.Serve);
+        if (currentPlayer == 1)
+        {
+            if (isJoystick)
+                P1.GetComponent<GamepadPlayer>().SetState(PlayerState.Serve);
+            else
+                P1.GetComponent<KeyboardPlayer>().SetState(PlayerState.Serve);
+        }
         else
-            P1.GetComponent<Player>().SetState(Player.State.Play);
+        {
+            if(isJoystick)
+                P1.GetComponent<GamepadPlayer>().SetState(PlayerState.Play);
+            else
+                P1.GetComponent<KeyboardPlayer>().SetState(PlayerState.Play);
+        }
+    }
+
+    private void SetPlayer2State()
+    {
+        if (currentPlayer == 1)
+            P2.GetComponent<GamepadPlayer>().SetState(PlayerState.Play);
+        else
+            P2.GetComponent<GamepadPlayer>().SetState(PlayerState.Serve);
     }
 
     private void SetAIServeState()
     {
         if (currentPlayer == 1)
-            P2.GetComponent<AI>().SetState(AI.State.WaitingForPlayerServe);
+            P2.GetComponent<AI>().SetState(AIState.WaitingForPlayerServe);
         else
-            P2.GetComponent<AI>().SetState(AI.State.WaitingToServe);
+            P2.GetComponent<AI>().SetState(AIState.WaitingToServe);
     }
 
     private void ChangeServePosition()
@@ -383,9 +498,24 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
     private void SetServePosition()
     {
         SetPlayerPosition(new Vector3(P1Positions[servePosition].position.x, P1Positions[servePosition].position.y, P1Positions[servePosition].position.z));
-        P2.transform.position = new Vector3(P2Positions[servePosition].position.x, P2Positions[servePosition].position.y, P2Positions[servePosition].position.z);
-        P1.GetComponent<Player>().SetServeSide(servePosition);
-        P2.GetComponent<AI>().SetServeSide(servePosition);
+        if(multiplayer)
+            SetPlayer2Position(new Vector3(P2Positions[servePosition].position.x, P2Positions[servePosition].position.y, P2Positions[servePosition].position.z));
+        else
+            P2.transform.position = new Vector3(P2Positions[servePosition].position.x, P2Positions[servePosition].position.y, P2Positions[servePosition].position.z);
+
+        if(!multiplayer)
+        {
+            P2.GetComponent<AI>().SetServeSide(servePosition);
+            if(isJoystick)
+                P1.GetComponent<GamepadPlayer>().SetServeSide(servePosition);
+            else
+                P1.GetComponent<KeyboardPlayer>().SetServeSide(servePosition);
+        } else
+        {
+            P1.GetComponent<KeyboardPlayer>().SetServeSide(servePosition);
+            P2.GetComponent<GamepadPlayer>().SetServeSide(servePosition);
+        }
+
         if (currentPlayer == 1)
             ball.transform.position = new Vector3(P1.transform.position.x, 3, P1.transform.position.z);
         else
@@ -399,7 +529,14 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         P1.gameObject.GetComponent<CharacterController>().enabled = true;
     }
 
-    private void ChangeCurrentPLayer()
+    private void SetPlayer2Position(Vector3 position)
+    {
+        P2.gameObject.GetComponent<CharacterController>().enabled = false;
+        P2.transform.position = position;
+        P2.gameObject.GetComponent<CharacterController>().enabled = true;
+    }
+
+    private void ChangeCurrentPlayer()
     {
         if (currentPlayer == 1)
             currentPlayer = 2;
@@ -426,8 +563,6 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
             matchWinner = 1;
             matchesRemaining--;
             textMatch.text = $"{matches - matchesRemaining}";
-            //Debug.Log(matches);
-            //Debug.Log(matchesRemaining);
             return true;
         }
         if (gamesP2 >= gamesToWin)
@@ -445,22 +580,23 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         scoreP1 = "0";
         scoreP2 = "0";
         isGameOver = false;
-        ChangeCurrentPLayer();
+        ChangeCurrentPlayer();
         servePosition = 0;
         ResetPoint();
     }
 
     private void ResetMatch()
-    {        
+    {
         gamesP1 = 0;
         gamesP2 = 0;
         difficulty++;
-        P2.GetComponent<AI>().SetDifficulty(difficulty);
+        if(!multiplayer)
+            P2.GetComponent<AI>().SetDifficulty(difficulty);
         ResetGame();
     }
 
     public void SetBouncePosition(CourtPosition courtPosition)
-    {        
+    {
         if (ballBounced)
         {
             if (!ballBouncedTwice)
@@ -475,7 +611,6 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
             bouncePosition = courtPosition;
         }
     }
-
 
     public int GetCurrentPlayer()
     {

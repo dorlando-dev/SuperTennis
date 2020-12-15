@@ -17,14 +17,14 @@ public class MainMenuManager : MonoBehaviour
         
     }
 
-    public void PlayExhibition()
+    public void SetExhibition()
     {
-        gameManager.PlayExhibition();
+        gameManager.SetExhibition();
     }
 
-    public void PlayTournament()
+    public void SetTournament()
     {
-        gameManager.PlayTournament();
+        gameManager.SetTournament();
     }
 
     public void SetEasy()
@@ -50,6 +50,26 @@ public class MainMenuManager : MonoBehaviour
     public void PlayRolandGarros()
     {
         gameManager.PlayRolandGarros();
+    }
+
+    public void SetSinglePLayer()
+    {
+        gameManager.SetSinglePLayer();
+    }
+
+    public void SetMultiPlayer()
+    {
+        gameManager.SetMultiPLayer();
+    }
+
+    public void SetJoystic()
+    {
+        gameManager.SetJoystick();
+    }
+
+    public void SetKeyboard()
+    {
+        gameManager.SetKeyboard();
     }
 
     public void QuitGame()

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,25 +21,12 @@ public class AI : MonoBehaviour
     private float waitAnimationTime = 1f;
     private int counter = 0;
 
-    private State state = State.MoveToCenter;
+    private MatchManager.AIState state = MatchManager.AIState.MoveToCenter;
     private Vector3 ballDestination;
-    private State from;
+    private MatchManager.AIState from;
 
     private BallHitter.Side serveSide;
     private float difficulty;
-
-    public enum State
-    {
-        WaitingToServe,
-        Serve,
-        HitBall,
-        WaitingForPlayerServe,
-        MoveToCenter,
-        MovingToBall,
-        WaitAnimation,
-        Stop
-
-    }
 
     // Start is called before the first frame update
     void Start()
@@ -53,65 +40,65 @@ public class AI : MonoBehaviour
     {
         switch (state)
         {
-            case State.WaitingToServe:
+            case MatchManager.AIState.WaitingToServe:
                 Stop();
                 if (waitTime < waitingToServeTime)
                     waitTime += Time.deltaTime;
                 else
                 {
-                    state = State.WaitAnimation;
-                    from = State.Serve;
-                    waitTime = 0;                    
+                    state = MatchManager.AIState.WaitAnimation;
+                    from = MatchManager.AIState.Serve;
+                    waitTime = 0;
                     Animator.SetTrigger("Serve");
                 }
                 break;
-            case State.Serve:
+            case MatchManager.AIState.Serve:
                 Serve();
-                state = State.MoveToCenter;
+                state = MatchManager.AIState.MoveToCenter;
                 break;
-            case State.HitBall:
+            case MatchManager.AIState.HitBall:
                 HitBall();
-                state = State.MoveToCenter;
+                state = MatchManager.AIState.MoveToCenter;
                 break;
-            case State.WaitAnimation:
-                if (from == State.Serve)
+            case MatchManager.AIState.WaitAnimation:
+                if (from == MatchManager.AIState.Serve)
                 {
                     if (waitTime < waitAnimationTime)
                         waitTime++;
                     else
                     {
-                        state = State.Serve;
+                        state = MatchManager.AIState.Serve;
                         waitTime += Time.deltaTime;
                         Stop();
                     }
                 }
                 else
                 {
-                    state = State.HitBall;
+                    state = MatchManager.AIState.HitBall;
                     Stop();
                 }
                 break;
-            case State.MoveToCenter:
+            case MatchManager.AIState.MoveToCenter:
                 MoveToCenter();
                 break;
-            case State.MovingToBall:
+            case MatchManager.AIState.MovingToBall:
                 MoveToBall();
                 float dist = Vector3.Distance(ball.transform.position, transform.position);
                 if (dist <= hitThreshold)
                 {
-                    state = State.WaitAnimation;
-                    from = State.HitBall;
+                    state = MatchManager.AIState.WaitAnimation;
+                    from = MatchManager.AIState.HitBall;
                 }
                 break;
-            case State.Stop:
+            case MatchManager.AIState.Stop:
                 Stop();
                 break;
         }
     }
 
     void HitBall()
-    {        
-        ball.gameObject.GetComponent<Ball>().Freeze(false);        
+    {
+        ball.gameObject.GetComponent<Ball>().Freeze(false);
         float dist = Vector3.Distance(ball.transform.position, transform.position);
         if (dist <= hitThreshold)
         {
@@ -146,7 +133,7 @@ public class AI : MonoBehaviour
             }
 
 
-            Vector3 hit = ballHitter.hitBall(side, depth, difficulty, false)[1];
+            Vector3 hit = ballHitter.hitBall(side, depth, difficulty)[1];
             ballRb.velocity = hit;
             MatchManager.Instance.SetLastHit(2, Vector3.zero);
             audioClipHitBall.Play();
@@ -155,7 +142,7 @@ public class AI : MonoBehaviour
 
     void Serve()
     {
-        ball.gameObject.GetComponent<Ball>().Freeze(false);        
+        ball.gameObject.GetComponent<Ball>().Freeze(false);
         float dist = Vector3.Distance(ball.transform.position, transform.position);
         if (dist <= hitThreshold)
         {
@@ -174,14 +161,14 @@ public class AI : MonoBehaviour
                 side = BallHitter.Side.Right;
             }
 
-            Vector3 hit = ballHitter.serve(side, serveSide, difficulty, false)[1];
+            Vector3 hit = ballHitter.serve(side, serveSide, difficulty)[1];
             ballRb.velocity = hit;
             MatchManager.Instance.SetLastHit(2, Vector3.zero);
             audioClipHitBall.Play();
         }
     }
 
-    public void SetState(State newState)
+    public void SetState(MatchManager.AIState newState)
     {
         state = newState;
     }
@@ -210,7 +197,7 @@ public class AI : MonoBehaviour
     {
         if(side == 0)
         {
-            serveSide = BallHitter.Side.Left;            
+            serveSide = BallHitter.Side.Left;
         }
         else
         {

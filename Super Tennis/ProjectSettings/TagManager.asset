@@ -12,6 +12,7 @@ TagManager:
   - PlayerHalf
   - Out
   - Racket
+  - Player2
   layers:
   - Default
   - TransparentFX

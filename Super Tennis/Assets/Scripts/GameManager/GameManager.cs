@@ -17,23 +17,14 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
     public int exhibitionMatches = 1;
     public int difficulty = 1;
     public int gamesToWin = 2;
+    public bool multiplayer = false;
+    public bool isJoystick = false;
 
     // Start is called before the first frame update
     void Start()
     {
         SceneManager.LoadScene("MainMenu");
         DontDestroyOnLoad(this);
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (gameState == GameState.Paused)
-                Resume();
-            else if(gameState == GameState.Game)
-                Pause();
-        }
     }
 
     public enum GameState
@@ -63,15 +54,14 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
         Tournament
     }
 
-    public void PlayExhibition()
+    public void SetExhibition()
     {
         gameMode = GameMode.Exhibition;
     }
 
-    public void PlayTournament()
+    public void SetTournament()
     {
         gameMode = GameMode.Tournament;
-        PlayRolandGarros();
     }
 
     public void PlayUSOpen()
@@ -89,17 +79,37 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
     public void SetEasy()
     {
         difficulty = 1;
-        PlayRolandGarros();
     }
 
     public void SetMedium()
     {
         difficulty = 2;
-        PlayRolandGarros();
     }
     public void SetHard()
     {
         difficulty = 3;
+    }
+
+    public void SetSinglePLayer()
+    {
+        multiplayer = false;
+    }
+
+    public void SetMultiPLayer()
+    {
+        multiplayer = true;
+        PlayRolandGarros();
+    }
+
+    public void SetJoystick()
+    {
+        isJoystick = true;
+        PlayRolandGarros();
+    }
+
+    public void SetKeyboard()
+    {
+        isJoystick = false;
         PlayRolandGarros();
     }
 
@@ -139,5 +149,15 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
     public int GetGamesToWin()
     {
         return gamesToWin;
+    }
+
+    public bool GetMultiplayer()
+    {
+        return multiplayer;
+    }
+
+    public bool IsJoystick()
+    {
+        return isJoystick;
     }
 }
