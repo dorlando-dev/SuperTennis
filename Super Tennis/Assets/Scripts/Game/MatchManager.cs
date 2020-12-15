@@ -122,9 +122,10 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         if (multiplayer)
         {
             P1 = PlayerKeyboard;
-            P2 = Player2;
-            Camera.main.rect = new Rect(0f, 0f, 0.495f, 1f);
-            camera2.rect = new Rect(0.505f, 0f, 0.495f, 1f);
+            P2 = Player2;            
+            
+            Camera.main.rect = new Rect(0f, 0.505f, 1f, 0.495f);
+            camera2.rect = new Rect(0f, 0f, 1f, 0.495f);         
             camera2.gameObject.SetActive(true);
         }
         else
@@ -161,18 +162,15 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                         if (bouncePosition == expectedServePosition)
                         {
                             state = State.Game;
-                            Debug.Log("A");
                         }
                         else
                         {
-                            Debug.Log("B");
                             state = State.WaitPointOver;
                             pointWinner = currentPlayer == 1 ? 2 : 1;
                             TriggerSound();
                             if (!multiplayer)
                             {
-                                AI p2 = P2.GetComponent<AI>();
-                                p2.SetState(AIState.Stop);
+                                P2.GetComponent<AI>().SetState(AIState.Stop);
                             }
 
                         }
@@ -189,6 +187,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
                 }
                 break;
             case State.WaitPointOver:
+                Debug.Log("A");
                 DisplayPointResult("POINT " + (pointWinner == 1 ? "P1" : "P2"));
                 if (waitCounter < waitTime)
                     waitCounter += Time.deltaTime;
