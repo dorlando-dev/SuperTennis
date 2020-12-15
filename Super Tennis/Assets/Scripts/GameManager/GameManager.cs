@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
     public int difficulty = 1;
     public int gamesToWin = 2;
     public bool multiplayer = false;
+    public bool isJoystick = false;
 
     PlayerControls controls;
 
@@ -75,15 +76,14 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
         Tournament
     }
 
-    public void PlayExhibition()
+    public void SetExhibition()
     {
         gameMode = GameMode.Exhibition;
     }
 
-    public void PlayTournament()
+    public void SetTournament()
     {
         gameMode = GameMode.Tournament;
-        PlayRolandGarros();
     }
 
     public void PlayUSOpen()
@@ -101,18 +101,15 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
     public void SetEasy()
     {
         difficulty = 1;
-        PlayRolandGarros();
     }
 
     public void SetMedium()
     {
         difficulty = 2;
-        PlayRolandGarros();
     }
     public void SetHard()
     {
         difficulty = 3;
-        PlayRolandGarros();
     }
 
     public void SetSinglePLayer()
@@ -123,6 +120,18 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
     public void SetMultiPLayer()
     {
         multiplayer = true;
+        PlayRolandGarros();
+    }
+
+    public void SetJoystick()
+    {
+        isJoystick = true;
+        PlayRolandGarros();
+    }
+
+    public void SetKeyboard()
+    {
+        isJoystick = false;
         PlayRolandGarros();
     }
 
@@ -167,5 +176,10 @@ public class GameManager : MonoBehaviorSingleton<GameManager>
     public bool GetMultiplayer()
     {
         return multiplayer;
+    }
+
+    public bool IsJoystick()
+    {
+        return isJoystick;
     }
 }

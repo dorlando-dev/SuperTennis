@@ -11,10 +11,13 @@ using UnityEngine.UI;
 public class MatchManager : MonoBehaviorSingleton<MatchManager>
 {
     public GameObject ball;
-    public GameObject P1;
-    public GameObject OtherPlayer;
+    private GameObject P1;
+    private GameObject P2;
+    public GameObject PlayerKeyboard;
+    public GameObject PlayerJoystick;
+    public GameObject Player2;
     public GameObject AI;
-    public GameObject P2;
+
     public List<Transform> P1Positions;
     public List<Transform> P2Positions;
     public TMP_Text textGameMode;
@@ -31,6 +34,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
 
     private GameManager gameManager;
     private bool multiplayer;
+    private bool isJoystick;
     private int gamesToWin;
     private int difficulty;
     private string scoreP1 = "0";
@@ -102,6 +106,7 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         gameManager = GameManager.Instance;
 
         GameManager.GameMode gameMode = gameManager.GetGameMode();
+        isJoystick = gameManager.IsJoystick();
         if (gameMode == GameManager.GameMode.Tournament)
         {
             matchesRemaining = gameManager.GetTournamentMatches();
@@ -112,16 +117,25 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
             matchesRemaining = gameManager.GetExhibitionMatches();
             textGameMode.text = "Exhibition";
             multiplayer = gameManager.GetMultiplayer();
+
         }
         if (multiplayer)
         {
-            P2 = OtherPlayer;
+            P1 = PlayerKeyboard;
+            P2 = Player2;
             Camera.main.rect = new Rect(0f, 0f, 0.495f, 1f);
             camera2.rect = new Rect(0.505f, 0f, 0.495f, 1f);
             camera2.gameObject.SetActive(true);
         }
         else
+        {
+            if (isJoystick)
+                P1 = PlayerJoystick;
+            else
+                P1 = PlayerKeyboard;
             P2 = AI;
+        }
+        P1.SetActive(true);
         P2.SetActive(true);
 
         matches = matchesRemaining;
@@ -408,10 +422,20 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
 
     private void SetPlayerState()
     {
-        if(currentPlayer == 1)
-            P1.GetComponent<KeyboardPlayer>().SetState(PlayerState.Serve);
+        if (currentPlayer == 1)
+        {
+            if (isJoystick)
+                P1.GetComponent<GamepadPlayer>().SetState(PlayerState.Serve);
+            else
+                P1.GetComponent<KeyboardPlayer>().SetState(PlayerState.Serve);
+        }
         else
-            P1.GetComponent<KeyboardPlayer>().SetState(PlayerState.Play);
+        {
+            if(isJoystick)
+                P1.GetComponent<GamepadPlayer>().SetState(PlayerState.Play);
+            else
+                P1.GetComponent<KeyboardPlayer>().SetState(PlayerState.Play);
+        }
     }
 
     private void SetPlayer2State()
@@ -444,10 +468,16 @@ public class MatchManager : MonoBehaviorSingleton<MatchManager>
         if(multiplayer)
             SetPlayer2Position(new Vector3(P2Positions[servePosition].position.x, P2Positions[servePosition].position.y, P2Positions[servePosition].position.z));
         else
-            P2.transform.position = new Vector3(P2Positions[servePosition].position.x, P2Positions[servePosition].position.y, P2Positions[servePosition].position.z);
-        P1.GetComponent<KeyboardPlayer>().SetServeSide(servePosition);
+            P2.transform.position = new Vector3(P2Positions[servePosition].position.x, P2Positions[servePosition].position.y, P2Positions[servePosition].position.z);        
+        
+        if(isJoystick)
+            P1.GetComponent<GamepadPlayer>().SetServeSide(servePosition);
+        else
+            P1.GetComponent<KeyboardPlayer>().SetServeSide(servePosition);
+        
         if(!multiplayer)
-        P2.GetComponent<AI>().SetServeSide(servePosition);
+            P2.GetComponent<AI>().SetServeSide(servePosition);
+        
         if (currentPlayer == 1)
             ball.transform.position = new Vector3(P1.transform.position.x, 3, P1.transform.position.z);
         else
