@@ -76,7 +76,7 @@ public class GamepadPlayer : MonoBehaviour
 
     void HitBall()
     {
-        if(MatchManager.Instance.GetCurrentPlayer() == 1)
+        if((MatchManager.Instance.GetCurrentPlayer() == 1 && gameObject.tag == "Player") || (MatchManager.Instance.GetCurrentPlayer() == 2 && gameObject.tag == "Player2"))
             ball.gameObject.GetComponent<Ball>().Freeze(false);
 
         float dist = Vector3.Distance(ball.transform.position, transform.position);
